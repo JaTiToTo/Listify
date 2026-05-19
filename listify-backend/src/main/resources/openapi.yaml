@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Demo API
+  description: My first API-first Spring Boot API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8081
+
+tags:
+  - name: Greeting
+    description: Greeting endpoints
+
+paths:
+  /api/hello:
+    get:
+      tags:
+        - Greeting
+      summary: Say hello
+      operationId: hello
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+            default: World
+      responses:
+        '200':
+          description: Successful greeting
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingResponse'
+
+components:
+  schemas:
+    GreetingResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Hello, World!
