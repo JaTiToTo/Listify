@@ -56,9 +56,9 @@ src/
 ├── main/
 │   ├── java/com/jatitoto/listify_backend/
 │   │   ├── mapper			# To-do: To map i.e. json to objects
-│   │   ├── service			# To-do: Businesslogic
+│   │   ├── service			# Is called from the controller and may have Businesslogic
 │   │   ├── config			# To-do: Conigs, duh!
-│   │   └── controller      # Endpoint implementations
+│   │   └── controller      # Endpoint implementations, calls a function in one of the services in the service dir
 │	│
 │	└── resources/
 │       ├── openapi.yaml                 # API contract — edit this to change the API
