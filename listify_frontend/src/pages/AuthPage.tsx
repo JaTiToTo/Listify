@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import imgImage16 from '../assets/svgs/spotifyLogo.svg';
 import imgLogo from '../assets/svgs/Logo.svg';
-import imgPolygonCorner from '../assets/svgs/polygonCornerLineBlue.svg';
+import imgPolygonCorner from '../assets/svgs/polygonCorner.svg';
 
 import VerticalLines from '../components/design/verticalLines/VerticalLines'
 
@@ -28,11 +28,6 @@ export function AuthPage() {
   return (
     <div className="bg-[#f7f9ef] relative size-full min-h-screen overflow-hidden">
       <div className="-translate-x-1/2 -translate-y-1/2 absolute content-stretch flex flex-col gap-[24px] items-center left-1/2 top-1/2 w-[400px] z-10">
-        <div className="content-stretch flex flex-col items-center relative shrink-0">
-          <p className="[word-break:break-word] font-quub italic leading-[1.5] relative shrink-0 text-[24px] text-black text-center tracking-[-0.24px] whitespace-nowrap">
-            Enter your Spotify email
-          </p>
-        </div>
         <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0">
           <div className="bg-white border border-[#e0e0e0] border-solid content-stretch flex h-[40px] items-center px-[16px] py-[8px] relative rounded-[8px] shrink-0 w-[400px]">
             <p className="[word-break:break-word] flex-[1_0_0] font-sans font-medium leading-[1.5] min-w-px not-italic overflow-hidden relative text-[#828282] text-[20px] text-ellipsis whitespace-nowrap">
@@ -60,18 +55,22 @@ export function AuthPage() {
             <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage16} />
           </div>
         </button>
-        <p className="[word-break:break-word] font-sans font-normal italic leading-[0] min-w-full not-italic relative shrink-0 text-[#828282] text-[16px] text-center w-[min-content]">
+
+        <p className="[word-break:break-word] font-sans font-normal leading-[0] min-w-full relative shrink-0 text-[#828282] text-[16px] text-center w-[min-content]">
           <span className="font-quub italic font-medium leading-[1.5]">{`By clicking continue, you agree to our `}</span>
           <span className="font-quub italic font-medium leading-[1.5] text-black">Terms of Service</span>
           <span className="font-quub italic font-medium leading-[1.5]">{` and `}</span>
           <span className="font-quub italic font-medium leading-[1.5] text-black">Privacy Policy</span>
         </p>
       </div>
+
       <LogoText className="-translate-x-1/2 [word-break:break-word] absolute font-vampire h-[137px] leading-[0] left-[calc(50%-0.5px)] not-italic text-[82px] top-[166px] tracking-[-3.28px] w-[285px] whitespace-nowrap z-10" />
-      <div className="absolute left-[638px] size-[163px] top-[10px] z-10">
-        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgLogo} />
+      <div className="absolute left-1/2 top-[10px] translate-x-[-50%] size-[163px] z-10 flex items-center justify-center">
+        <img alt="" className="block max-w-none size-full object-contain" src={imgLogo} />
       </div>
+
       <VerticalLines className="absolute left-[77px] top-[-8px] z-10" />
+
       <div className="absolute bottom-[0px] h-[1084px] right-[0px] w-[1114px] pointer-events-none translate-x-[400px] translate-y-[400px] z-0">
         <img alt="" className="absolute block inset-0 max-w-none size-full object-contain" src={imgPolygonCorner} />
       </div>
