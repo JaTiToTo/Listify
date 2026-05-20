@@ -11,7 +11,7 @@ export function ListPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
+
         {/* Duration Widget */}
         <div className="bg-white rounded-3xl p-8 shadow-sm flex flex-col items-center gap-12 relative">
           <div className="text-2xl font-bold font-sans text-[#1e1e1e]">Duration</div>
@@ -19,8 +19,8 @@ export function ListPage() {
             <div className="absolute w-full h-0.5 bg-gray-200" />
             <div className="absolute w-1/3 h-0.5 bg-black" />
             <div className="absolute left-1/3 -ml-3 z-10 flex flex-col items-center">
-               <div className="bg-white border rounded-md px-3 py-1 shadow-sm font-sans text-sm font-bold absolute -top-12">45 min</div>
-               <img src={imgEllipse5} alt="" className="w-6 h-6 border-[3px] border-black rounded-full select-none bg-white" draggable="false" />
+              <div className="bg-white border rounded-md px-3 py-1 shadow-sm font-sans text-sm font-bold absolute -top-12">45 min</div>
+              <img src={imgEllipse5} alt="" className="w-6 h-6 border-[3px] border-black rounded-full select-none bg-white" draggable="false" />
             </div>
             <div className="absolute top-6 left-0 text-black font-sans text-sm font-medium">5 min</div>
             <div className="absolute top-6 right-0 text-black font-sans text-sm font-medium">2 h</div>
@@ -34,8 +34,8 @@ export function ListPage() {
             <div className="absolute w-full h-0.5 bg-gray-200" />
             <div className="absolute w-3/5 h-0.5 bg-black" />
             <div className="absolute left-3/5 -ml-3 z-10 flex flex-col items-center">
-               <div className="bg-white border rounded-md px-3 py-1 shadow-sm font-sans text-sm font-bold absolute -top-12">60%</div>
-               <img src={imgEllipse6} alt="" className="w-6 h-6 border-[3px] border-black rounded-full select-none bg-white" draggable="false" />
+              <div className="bg-white border rounded-md px-3 py-1 shadow-sm font-sans text-sm font-bold absolute -top-12">60%</div>
+              <img src={imgEllipse6} alt="" className="w-6 h-6 border-[3px] border-black rounded-full select-none bg-white" draggable="false" />
             </div>
             <div className="absolute top-6 left-0 text-black font-sans text-sm font-medium">Discovery</div>
             <div className="absolute top-6 right-0 text-black font-sans text-sm font-medium">Favourites</div>
@@ -49,8 +49,8 @@ export function ListPage() {
             <div className="absolute w-full h-0.5 bg-gray-200" />
             <div className="absolute w-1/2 h-0.5 bg-black" />
             <div className="absolute left-1/2 -ml-3 z-10 flex flex-col items-center">
-               <div className="bg-white border rounded-md px-3 py-1 shadow-sm font-sans text-sm font-bold absolute -top-12">3 / 5</div>
-               <img src={imgEllipse8} alt="" className="w-6 h-6 border-[3px] border-black rounded-full select-none bg-white" draggable="false" />
+              <div className="bg-white border rounded-md px-3 py-1 shadow-sm font-sans text-sm font-bold absolute -top-12">3 / 5</div>
+              <img src={imgEllipse8} alt="" className="w-6 h-6 border-[3px] border-black rounded-full select-none bg-white" draggable="false" />
             </div>
             <div className="absolute top-6 left-0 text-black font-sans text-sm font-medium">Cohesive</div>
             <div className="absolute top-6 right-0 text-black font-sans text-sm font-medium">Diverse</div>
@@ -62,8 +62,8 @@ export function ListPage() {
         <button className="bg-[#1e1e1e] text-[#f7f9ef] font-quub font-bold text-xl px-12 py-4 rounded-xl hover:bg-black transition-colors rotate-[-1.5deg]">
           Start playlist creation
         </button>['QUUB:Bold_R',sans-serif] justify-center leading-[0] not-italic relative text-[#f7f9ef] text-[28px] tracking-[-0.84px] whitespace-nowrap" data-node-id="48:1686"
-              <p className="leading-[1.2]">Start playlist creation</p>
-            </div>
-          </div>
+        <p className="leading-[1.2]">Start playlist creation</p>
+      </div>
+    </div>
   );
 }

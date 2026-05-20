@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 
-const imgImage16 = "http://localhost:3845/assets/f4731fa3892f3297d35abaa7ec46b621f1d4ae14.png";
-const imgLogo = "http://localhost:3845/assets/42182f53a614d2c76c2440db5cc4aee98cbe2f61.svg";
-const imgLines = "http://localhost:3845/assets/7cbcfab9715effd2966300fd6455e672d57ded09.svg";
-const imgPolygonCorner = "http://localhost:3845/assets/7ea4d455cde7cbe31c2435024ae8c98f60007d51.svg";
+import imgImage16 from '../assets/svgs/spotifyLogo.svg';
+import imgLogo from '../assets/svgs/Logo.svg';
+import imgPolygonCorner from '../assets/svgs/polygonCornerLineBlue.svg';
+
+import VerticalLines from '../components/design/verticalLines/VerticalLines'
 
 function LogoText({ className }: { className?: string }) {
   return (
@@ -70,11 +71,7 @@ export function AuthPage() {
       <div className="absolute left-[638px] size-[163px] top-[10px] z-10">
         <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgLogo} />
       </div>
-      <div className="absolute h-[977px] left-[77px] top-[-8px] w-[70px] z-10">
-        <div className="absolute inset-[0_-14.29%]">
-          <img alt="" className="block max-w-none size-full" src={imgLines} />
-        </div>
-      </div>
+      <VerticalLines className="absolute left-[77px] top-[-8px] z-10" />
       <div className="absolute bottom-[0px] h-[1084px] right-[0px] w-[1114px] pointer-events-none translate-x-[400px] translate-y-[400px] z-0">
         <img alt="" className="absolute block inset-0 max-w-none size-full object-contain" src={imgPolygonCorner} />
       </div>
