@@ -1,13 +1,12 @@
 .auth-card {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 18px;
   align-items: center;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
   z-index: 10;
 }
 
@@ -30,7 +29,8 @@
   height: 40px;
   padding: 8px 16px;
   border-radius: 8px;
-  width: 400px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-card__inputText {
@@ -49,26 +49,114 @@
   color: #fff;
   height: 40px;
   border-radius: 8px;
-  width: 400px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
 }
 
-.auth-card__primary p { margin: 0; font-family: QUUB, sans-serif; font-weight: 700; font-style: italic; font-size: 24px; }
+.auth-card__primary:hover {
+  background-color: #333;
+}
 
-.auth-card__or { display: flex; gap: 8px; align-items: center; width: 100%; justify-content: center; }
-.auth-card__divider { background: #e6e6e6; flex: 1 0 0; height: 1px; }
+.auth-card__primary p { 
+  margin: 0; 
+  font-family: QUUB, sans-serif; 
+  font-weight: 700; 
+  font-style: italic; 
+  font-size: 24px; 
+}
 
-.auth-card__spotify { background: #eee; height: 40px; width: 100%; border-radius: 8px; position: relative; }
-.auth-card__spotifyText { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 16px; }
-.auth-card__spotifyIcon { position: absolute; left: 15px; top: 5px; width: 30px; height: 30px; }
-.auth-card__spotifyIcon img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.auth-card__or { 
+  display: flex; 
+  gap: 8px; 
+  align-items: center; 
+  width: 100%; 
+  justify-content: center; 
+}
 
-.auth-card__footer { text-align: center; color: #828282; font-size: 16px; }
-.auth-card__footer .muted { color: #828282; }
+.auth-card__divider { 
+  background: #e6e6e6; 
+  flex: 1 0 0; 
+  height: 1px; 
+}
 
-@media (max-width: 768px) {
-  .auth-card { width: calc(100% - 40px); left: 50%; }
-  .auth-card__input, .auth-card__primary { width: 100%; }
+.auth-card__spotify { 
+  background: #eee; 
+  height: 40px; 
+  width: 100%; 
+  border-radius: 8px; 
+  position: relative; 
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.2s;
+}
+
+.auth-card__spotify:hover {
+  background-color: #ddd;
+}
+
+.auth-card__spotifyText { 
+  position: absolute; 
+  left: 50%; 
+  top: 50%; 
+  transform: translate(-50%, -50%); 
+  font-size: 16px; 
+}
+
+.auth-card__spotifyIcon { 
+  position: absolute; 
+  left: 15px; 
+  top: 5px; 
+  width: 30px; 
+  height: 30px; 
+}
+
+.auth-card__spotifyIcon img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  pointer-events: none; 
+}
+
+.auth-card__footer { 
+  text-align: center; 
+  color: #828282; 
+  font-size: 16px; 
+  width: 100%;
+  word-wrap: break-word;
+  line-height: 1.4;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.auth-card__footer .muted { 
+  color: #828282; 
+}
+
+@media (max-width: 480px) {
+  .auth-card { 
+    gap: 14px;
+    padding: 0;
+  }
+  
+  .auth-card__primary p { 
+    font-size: 18px; 
+  }
+  
+  .auth-card__input,
+  .auth-card__primary,
+  .auth-card__spotify {
+    height: 44px;
+  }
+  
+  .auth-card__footer { 
+    font-size: 14px; 
+  }
 }

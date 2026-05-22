@@ -1,21 +1,17 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import imgImage16 from '../../../assets/svgs/spotifyLogo.svg'
+import spotifyIcon from '../../../assets/svgs/spotifyLogo.svg'
 import './AuthCard.css'
 
 export default function AuthCard() {
   const navigate = useNavigate()
-
+  
+  {/* TODO: - Add form validation and error handling */}
   return (
     <div className="auth-card">
-      <div className="auth-card__title">
-        <p>Enter your Spotify email</p>
-      </div>
-
       <div className="auth-card__input">
-        <p className="auth-card__inputText">email@domain.com</p>
+        <input className="auth-card__inputText" type="email" placeholder="email@domain.com" />
       </div>
-
       <button onClick={() => navigate('/main')} className="auth-card__primary">
         <p>Login with email</p>
       </button>
@@ -29,7 +25,7 @@ export default function AuthCard() {
       <button onClick={() => navigate('/main')} className="auth-card__spotify">
         <div className="auth-card__spotifyText">Spotify</div>
         <div className="auth-card__spotifyIcon">
-          <img alt="" src={imgImage16} />
+          <img alt="" src={spotifyIcon} />
         </div>
       </button>
 

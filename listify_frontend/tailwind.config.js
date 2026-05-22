@@ -5,8 +5,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        vampire: ['"Vampire Raves"', 'sans-serif'],
-        quub: ['QUUB', 'sans-serif'],
+        vampire: ['"Vampire_Raves"', 'sans-serif'],
+        quub: ['"QUUB"', 'sans-serif'],
       },
       colors: {
         ink: {
