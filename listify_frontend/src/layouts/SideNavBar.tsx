@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+
 import imgLogo from '../assets/svgs/topcorner_logo.svg';
 import iconList from '../assets/svgs/list.svg';
 import iconMusic from '../assets/svgs/music.svg';
@@ -67,29 +68,18 @@ export function RootLayout() {
       <aside
         id="mobile-navigation"
         className={[
-          'fixed inset-y-0 left-0 z-30 w-[85vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-white pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-white md:pt-6',
+          'fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-white pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-white md:pt-6',
           isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         ].join(' ')}
       >
-        <div className="flex items-center justify-between px-4 md:block md:px-0">
-          <img src={imgLogo} alt="Listify" className="h-24 w-auto object-contain md:h-32 md:w-64" />
-          <button
-            type="button"
-            aria-label="Close navigation menu"
-            onClick={() => setIsMobileNavOpen(false)}
-            className="group inline-flex h-10 items-center gap-2 rounded-full border border-[#e0e0e0] bg-white px-3 text-[#1e1e1e] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c8c8c8] hover:bg-[#fafafa] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e1e1e]/20 focus-visible:ring-offset-2 md:hidden"
-          >
-            <span className="relative flex h-4 w-4 items-center justify-center" aria-hidden="true">
-              <span className="absolute h-0.5 w-4 rotate-45 rounded-full bg-current" />
-              <span className="absolute h-0.5 w-4 -rotate-45 rounded-full bg-current" />
-            </span>
-          </button>
+        <div className="flex items-center justify-between md:block">
+          <img src={imgLogo} alt="Listify" className="h-24 w-full object-contain" />
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 pb-6 flex flex-col gap-6">
           {/* Discover Section */}
           <div>
-            <div className="px-4 py-2 text-sm font-semibold text-black mb-1">Discover</div>
+            <div className="px-2 py-2 mt-2 text-sm font-semibold text-black mb-1">Discover</div>
             <nav className="flex flex-col gap-1">
               <NavLink to="/main" className={navLinkClass} end onClick={() => setIsMobileNavOpen(false)}>
                 <img src={iconHome} alt="" className="w-6 h-6" />
@@ -100,7 +90,7 @@ export function RootLayout() {
 
           {/* Library Section */}
           <div>
-            <div className="px-4 py-2 text-sm font-semibold text-black mb-1">Library</div>
+            <div className="px-2 py-2 mt-2 text-sm font-semibold text-black mb-1">Library</div>
             <nav className="flex flex-col gap-1">
               <div className="flex items-center gap-4 px-4 py-2.5 rounded-lg text-base font-medium text-black hover:bg-gray-50 cursor-not-allowed opacity-50">
                 <img src={iconList} alt="" className="w-6 h-6" />

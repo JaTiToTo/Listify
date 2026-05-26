@@ -179,3 +179,4 @@ README.html
 .exercism
 
 **/node_modules/.vite/
+**/dist
