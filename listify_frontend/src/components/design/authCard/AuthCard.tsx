@@ -1,4 +1,3 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import spotifyIcon from '../../../assets/svgs/spotifyLogo.svg'
 import './AuthCard.css'
@@ -21,7 +20,6 @@ export default function AuthCard() {
         <p>or continue with</p>
         <div className="auth-card__divider" />
       </div>
-
       <button onClick={() => navigate('/main')} className="auth-card__spotify">
         <div className="auth-card__spotifyText">Spotify</div>
         <div className="auth-card__spotifyIcon">

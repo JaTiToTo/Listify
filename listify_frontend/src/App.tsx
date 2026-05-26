@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { RootLayout } from './layouts/RootLayout';
+import { RootLayout } from './layouts/SideNavBar';
 import { AuthPage } from './pages/AuthPage';
 import { MainPage } from './pages/MainPage';
 import { ListPage } from './pages/ListPage';

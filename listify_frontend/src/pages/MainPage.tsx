@@ -1,8 +1,8 @@
-const imgPlaylistCoverImage = "http://localhost:3845/assets/ddafd214680dadd2835dc69a669d8ce023421b1c.png";
-const imgImage = "http://localhost:3845/assets/0f2eef527276a8ac29692b71ccc8efd60c3648d1.png";
-const imgImage1 = "http://localhost:3845/assets/fc2731f31997ae3a2a019044c6bcceb95d4b1f9c.png";
-const imgImage2 = "http://localhost:3845/assets/dab432531d8d817fdf7df94c27ea22d6593b57bc.png";
-const img360F249147728PmrpdMaVzaZ9No6JgwCn3I8W7AJDw1Wc1 = "http://localhost:3845/assets/56e7242eef223b0f62041a2319c8e004b94603ef.png";
+const playlistCoverImageOne = "src/assets/img/playlist-cover-image-1.png";
+const playlistCoverImageTwo = "src/assets/img/playlist-cover-image-2.png";
+const playlistCoverImageThree = "src/assets/img/playlist-cover-image-3.png";
+const playlistCoverImageFour = "src/assets/img/playlist-cover-image-4.png";
+const cassetteImage = "src/assets/img/cassette.png";
 
 export function MainPage() {
   return (
@@ -18,7 +18,7 @@ export function MainPage() {
           {/* Card 1 */}
           <div className="flex flex-col gap-4">
             <div className="relative h-56 rounded-2xl overflow-hidden shadow-sm">
-              <img src={imgPlaylistCoverImage} alt="" className="w-full h-full object-cover" />
+              <img src={playlistCoverImageOne} alt="" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black/10" />
               <h3 className="absolute top-4 left-4 text-3xl font-bold text-white tracking-wide">Daily Drive</h3>
             </div>
@@ -31,7 +31,7 @@ export function MainPage() {
           {/* Card 2 */}
           <div className="flex flex-col gap-4">
             <div className="relative h-56 rounded-2xl overflow-hidden bg-[#ffee93] shadow-sm">
-              <img src={imgImage} alt="" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
+              <img src={playlistCoverImageTwo} alt="" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
               <h3 className="absolute top-4 left-4 text-3xl font-bold text-white tracking-wide">Uptown Funk</h3>
             </div>
             <div className="flex flex-col gap-1">
@@ -43,7 +43,7 @@ export function MainPage() {
           {/* Card 3 */}
           <div className="flex flex-col gap-4">
             <div className="relative h-56 rounded-2xl overflow-hidden bg-[#ffc1c1] shadow-sm">
-              <img src={imgImage1} alt="" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
+              <img src={playlistCoverImageThree} alt="" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
               <h3 className="absolute top-4 left-4 text-3xl font-bold text-white tracking-wide">Sad vibes</h3>
             </div>
             <div className="flex flex-col gap-1">
@@ -55,7 +55,7 @@ export function MainPage() {
           {/* Card 4 */}
           <div className="flex flex-col gap-4">
             <div className="relative h-56 rounded-2xl overflow-hidden bg-[#f5f5f5] shadow-sm">
-              <img src={imgImage2} alt="" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
+              <img src={playlistCoverImageFour} alt="" className="w-full h-full object-cover opacity-90 mix-blend-multiply" />
               <h3 className="absolute top-4 left-4 text-3xl font-bold text-white tracking-wide">Night drive</h3>
             </div>
             <div className="flex flex-col gap-1">
@@ -74,7 +74,7 @@ export function MainPage() {
         </div>
 
         <div className="relative w-full max-w-2xl h-80 rounded-3xl overflow-hidden shadow-md">
-          <img src={img360F249147728PmrpdMaVzaZ9No6JgwCn3I8W7AJDw1Wc1} alt="" className="w-full h-full object-cover" />
+          <img src={cassetteImage} alt="" className="w-full h-full object-cover" />
         </div>
       </section>
     </div>
