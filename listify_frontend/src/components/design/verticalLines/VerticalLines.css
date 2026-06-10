@@ -1,0 +1,26 @@
+/* Decorative vertical lines used across hero/background as in Figma design */
+.vertical-lines {
+    position: relative;
+    display: block;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.vertical-lines__inner {
+    position: relative;
+    width: 90px;
+    height: 972px;
+}
+
+.vertical-lines__line {
+    position: absolute;
+    top: 0;
+    display: block;
+    flex: none;
+}
+
+@media (max-width: 768px) {
+    .vertical-lines {
+        display: none;
+    }
+}
