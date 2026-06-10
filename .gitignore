@@ -180,3 +180,40 @@ README.html
 
 **/node_modules/.vite/
 **/dist
+
+listify_frontend/node_modules/
+
+#Backend specific
+listify-backend/HELP.md
+listify-backend/target/
+listify-backend/.mvn/wrapper/maven-wrapper.jar
+!listify-backend/**/src/main/**/target/
+!listify-backend/**/src/test/**/target/
+
+### STS ###
+listify-backend/.apt_generated
+listify-backend/.classpath
+listify-backend/.factorypath
+listify-backend/.project
+listify-backend/.settings
+listify-backend/.springBeans
+listify-backend/.sts4-cache
+
+### IntelliJ IDEA ###
+listify-backend/.idea
+listify-backend/*.iws
+listify-backend/*.iml
+listify-backend/*.ipr
+
+### NetBeans ###
+listify-backend/nbproject/private/
+listify-backend/nbbuild/
+listify-backend/dist/
+listify-backend/nbdist/
+listify-backend/.nb-gradle/
+listify-backend/build/
+!listify-backend/**/src/main/**/build/
+!listify-backend/**/src/test/**/build/
+
+### VS Code ###
+listify-backend/.vscode/
