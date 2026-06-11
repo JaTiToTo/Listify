@@ -20,7 +20,11 @@ export default function AuthCard() {
         <p>or continue with</p>
         <div className="auth-card__divider" />
       </div>
-      <button onClick={() => navigate('/main')} className="auth-card__spotify">
+      <button onClick={async () => {
+        const res = await fetch("http://localhost:8081/auth/login/spotify");
+        const url = await res.text();
+        window.location.href = url;
+}} className="auth-card__spotify">
         <div className="auth-card__spotifyText">Spotify</div>
         <div className="auth-card__spotifyIcon">
           <img alt="" src={spotifyIcon} />
