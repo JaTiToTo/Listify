@@ -12,6 +12,38 @@ tags:
     description: Greeting endpoints
 
 paths:
+  /auth/login/spotify:
+    get:
+      summary: Initiate Spotify login
+      operationId: initiateSpotifyLogin
+      description: >
+        Generates a PKCE code verifier and challenge, stores the code verifier
+        in the session, and returns the Spotify authorization URL for the
+        frontend to redirect to.
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Spotify authorization URL as plain text
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: >
+                  https://accounts.spotify.com/authorize?response_type=code
+                  &client_id=abc123
+                  &redirect_uri=http://localhost:8080/auth/callback
+                  &scope=playlist-modify-public%20playlist-modify-private
+                  &code_challenge_method=S256
+                  &code_challenge=xyz789
+                  &state=randomStateString
+        '500':
+          description: Failed to generate PKCE parameters or build Spotify URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/hello:
     get:
       tags:
@@ -35,6 +67,28 @@ paths:
 
 components:
   schemas:
+    ErrorResponse:
+        type: object
+        properties:
+          timestamp:
+            type: string
+            format: date-time
+            example: '2026-06-11T14:32:00Z'
+          status:
+            type: integer
+            example: 500
+          error:
+            type: string
+            example: Internal Server Error
+          message:
+            type: string
+            example: Failed to generate PKCE parameters
+        required:
+          - timestamp
+          - status
+          - error
+          - message
+
     GreetingResponse:
       type: object
       properties:
