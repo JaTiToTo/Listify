@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { apiGet } from '../lib/api';
 
+type AudioFeatureKey = 'energy' | 'danceability' | 'valence';
+
 type TrackItem = {
     name: string;
     popularity: number;
@@ -11,13 +13,15 @@ type TrackItem = {
         images: Array<{ url: string }>;
     };
     artists: Array<{ name: string }>;
-};
+} & Partial<Record<AudioFeatureKey, number>>;
 
 type MockResult = {
     tracks: {
         items: TrackItem[];
     };
 };
+
+
 
 const DraftPage = () => {
     const [data, setData] = useState<MockResult | null>(null);
@@ -32,7 +36,9 @@ const DraftPage = () => {
         return <div>Loading...</div>;
     }
 
+
     return (
+
         <div className="mx-auto flex max-w-5xl flex-col gap-8 py-8">
             <div className="flex flex-col gap-2">
                 <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
@@ -63,61 +69,16 @@ const DraftPage = () => {
 
                                 {/* Vibe Section */}
                                 {/* TODO: later do: width: `style={{width: `${energy * 100}%`}}` */}
-                                {/* Vibe Section */}
-                                <div className="w-48 border-l-2 border-[#1e1e1e] pl-4">
-
-                                    <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#666]">
-                                        Audio Profile
-                                    </p>
-
+                                <div className="w-52 border-l-2 border-[#1e1e1e] pl-6">
                                     <div className="space-y-3">
-
-                                        <div>
-                                            <div className="mb-1 flex justify-between font-mono text-[10px] uppercase tracking-wider">
-                                                <span>ENRG</span>
-                                                <span>82</span>
-                                            </div>
-
-                                            <div className="flex h-2 overflow-hidden border border-[#1e1e1e]">
-                                                <div
-                                                    className="bg-[#00e5ff]"
-                                                    style={{ width: "82%" }}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div className="mb-1 flex justify-between font-mono text-[10px] uppercase tracking-wider">
-                                                <span>DNCE</span>
-                                                <span>63</span>
-                                            </div>
-
-                                            <div className="flex h-2 overflow-hidden border border-[#1e1e1e]">
-                                                <div
-                                                    className="bg-[#ff00aa]"
-                                                    style={{ width: "63%" }}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div className="mb-1 flex justify-between font-mono text-[10px] uppercase tracking-wider">
-                                                <span>MOOD</span>
-                                                <span>91</span>
-                                            </div>
-
-                                            <div className="flex h-2 overflow-hidden border border-[#1e1e1e]">
-                                                <div
-                                                    className="bg-[#d7ff3f]"
-                                                    style={{ width: "91%" }}
-                                                />
-                                            </div>
-                                        </div>
+                                        {STATS.map(({ label, key, color }) => (
+                                            <StatMeter key={key} label={label} value={track[key]} color={color} />
+                                        ))}
                                     </div>
                                 </div>
 
                                 {/* Remove Section */}
-                                <div className="flex shrink-0 items-start justify-end">
+                                <div className="flex shrink-0 items-start pl-10 justify-end">
                                     <button
                                         className="flex h-8 w-8 items-center justify-center rounded-xl
                                         bg-red-100 text-red-500 transition hover:bg-red-200 hover:scale-105">
@@ -141,5 +102,48 @@ const DraftPage = () => {
         </div>
     );
 };
+
+const STATS = [
+    { label: "ENRG", key: "energy", color: "#FFD319" },
+    { label: "DNCE", key: "danceability", color: "#FF4D6D" },
+    { label: "MOOD", key: "valence", color: "#3387B9" },
+] as const;
+
+function StatMeter({ label, value, color }: { label: string; value?: number; color: string }) {
+    const pct = Math.round((value ?? 0) * 100);
+    const SEGMENTS = 12;
+    const filled = Math.round((pct / 100) * SEGMENTS);
+
+    return (
+        <div>
+            <div className="mb-1 flex justify-between font-quub text-[10px] font-medium uppercase tracking-[0.12em]">
+                <span className="text-[#888]">{label}</span>
+                <span className="font-mono" style={{ color, textShadow: `0 0 6px ${color}66` }}>
+                    {String(pct).padStart(3, "0")}
+                </span>
+            </div>
+
+            <div
+                role="meter"
+                aria-label={label}
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className="flex h-2.5 gap-[2px] border border-[#1e1e1e] bg-[#0a0a0a] p-[2px]"
+            >
+                {Array.from({ length: SEGMENTS }).map((_, i) => (
+                    <div
+                        key={i}
+                        className="flex-1 transition-colors duration-200"
+                        style={{
+                            backgroundColor: i < filled ? color : "#1a1a1a",
+                            boxShadow: i < filled ? `0 0 4px ${color}80` : "none",
+                        }}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default DraftPage;
