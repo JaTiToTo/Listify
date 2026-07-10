@@ -20,17 +20,17 @@
                     "id": "mockalbum1",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage1",
+                            "url": "https://picsum.photos/640/640?random=1",
                             "height": 640,
                             "width": 640
                         },
                         {
-                            "url": "https://i.scdn.co/image/mockimage1small",
+                            "url": "https://picsum.photos/300/300?random=1",
                             "height": 300,
                             "width": 300
                         },
                         {
-                            "url": "https://i.scdn.co/image/mockimage1thumb",
+                            "url": "https://picsum.photos/64/64?random=1",
                             "height": 64,
                             "width": 64
                         }
@@ -112,7 +112,7 @@
                     "id": "mockalbum1",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage1",
+                            "url": "https://picsum.photos/640/640?random=2",
                             "height": 640,
                             "width": 640
                         }
@@ -194,7 +194,7 @@
                     "id": "mockalbum2",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage2",
+                            "url": "https://picsum.photos/640/640?random=8",
                             "height": 640,
                             "width": 640
                         }
@@ -276,7 +276,7 @@
                     "id": "mockalbum3",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage3",
+                            "url": "https://picsum.photos/640/640?random=5",
                             "height": 640,
                             "width": 640
                         }
@@ -368,7 +368,7 @@
                     "id": "mockalbum4",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage4",
+                            "url": "https://picsum.photos/640/640?random=3",
                             "height": 640,
                             "width": 640
                         }
@@ -450,7 +450,7 @@
                     "id": "mockalbum5",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage5",
+                            "url": "https://picsum.photos/640/640?random=6",
                             "height": 640,
                             "width": 640
                         }
@@ -634,7 +634,7 @@
                     "id": "mockalbum7",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage7",
+                            "url": "https://picsum.photos/640/640?random=2",
                             "height": 640,
                             "width": 640
                         }
@@ -716,7 +716,7 @@
                     "id": "mockalbum8",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage8",
+                            "url": "https://picsum.photos/640/640?random=4",
                             "height": 640,
                             "width": 640
                         }

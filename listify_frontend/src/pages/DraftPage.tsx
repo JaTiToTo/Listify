@@ -21,8 +21,6 @@ type MockResult = {
     };
 };
 
-
-
 const DraftPage = () => {
     const [data, setData] = useState<MockResult | null>(null);
 
@@ -33,12 +31,12 @@ const DraftPage = () => {
     }, []);
 
     if (!data) {
+{/* TODO: Implement loading state */ }
         return <div>Loading...</div>;
     }
 
 
     return (
-
         <div className="mx-auto flex max-w-5xl flex-col gap-8 py-8">
             <div className="flex flex-col gap-2">
                 <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
@@ -51,41 +49,46 @@ const DraftPage = () => {
                     const artistName = track.artists.map((artist) => artist.name).join(', ');
 
                     return (
-                        <article key={`${track.name}-${artistName}`} className="rounded-3xl border border-[#e0e0e0] bg-[#f7f9ef] p-4 shadow-soft">
-                            <div className="flex gap-4">
+                        <article key={`${track.name}-${artistName}`} className="rounded-3xl border border-[#24B81F] bg-[#f7f9ef] overflow-hidden shadow-soft">
+{/* TODO: Implement reorder functionality */ }
+                            <div className="flex">
+                                <div className="flex min-w-0 flex-1 flex-col gap-4 p-4 md:flex-row">
 
-                                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-[#f7f9ef]">
-                                    {coverImage ? <img src={coverImage} alt={"Placeholder"} className="h-full w-full object-cover" /> : null}
-                                </div>
+                                    {/* Cover + Info */}
+                                    <div className="flex min-w-0 flex-1 items-center gap-4">
+                                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-[#3387B9] bg-[#f7f9ef]">
+                                            {coverImage ? (
+                                                <img src={coverImage} alt={`${track.album.name} cover`} className="h-full w-full object-cover" />
+                                            ) : null}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h2 className="truncate font-quub text-lg font-semibold text-[#1e1e1e]">{track.name}</h2>
+                                            <p className="truncate text-sm text-gray-600">{artistName}</p>
+                                            <p className="mt-1.5 truncate text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                                                {track.album.name} | {formatDuration(track.duration_ms)}
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                <div className="min-w-0 flex-1">
-                                    <h2 className="truncate font-quub text-lg font-semibold text-[#1e1e1e]">{track.name}</h2>
-                                    {/* Info Block */}
-                                    <p className="truncate text-sm text-gray-600">{artistName}</p>
-                                    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                                        {track.album.name} | {Math.round(track.duration_ms / 1000)}s
-                                    </p>
-                                </div>
-
-                                {/* Vibe Section */}
-                                {/* TODO: later do: width: `style={{width: `${energy * 100}%`}}` */}
-                                <div className="w-52 border-l-2 border-[#1e1e1e] pl-6">
-                                    <div className="space-y-3">
-                                        {STATS.map(({ label, key, color }) => (
-                                            <StatMeter key={key} label={label} value={track[key]} color={color} />
-                                        ))}
+                                    {/* Vibe Section */}
+                                    <div className="w-full border-t-2 border-[#1e1e1e] pt-4 md:w-52 md:border-l-2 md:border-t-0 md:pl-6 md:pr-2 md:pt-0">
+                                        <div className="space-y-3">
+                                            {STATS.map(({ label, key, color }) => (
+                                                <StatMeter key={key} label={label} value={track[key]} color={color} />
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Remove Section */}
-                                <div className="flex shrink-0 items-start pl-10 justify-end">
+                                <div className="flex shrink-0">
                                     <button
-                                        className="flex h-8 w-8 items-center justify-center rounded-xl
-                                        bg-red-100 text-red-500 transition hover:bg-red-200 hover:scale-105">
+                                        className="flex w-8 self-stretch items-center justify-center rounded-l-none rounded-r-3xl
+                                        bg-red-100 text-red-500 transition hover:bg-red-300 hover:scale-105">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            width="25"
-                                            height="25"
+                                            width="22"
+                                            height="22"
                                             viewBox="0 0 24 24"
                                             fill="red"
                                         >
@@ -99,13 +102,36 @@ const DraftPage = () => {
                     );
                 })}
             </div>
+
+            {/* Footer: duration summary + save action */}
+            <div className="flex flex-col gap-4 rounded-3xl border border-[#24B81F] bg-[#f7f9ef] p-4 shadow-soft sm:flex-row sm:items-center sm:justify-between">
+                <p className="font-vampire text-sm font-medium uppercase tracking-[0.18em] text-gray-500">
+                    Overall duration{" "}
+                    <span
+                        className="ml-2 font-vampire text-lg normal-case tracking-normal"
+                        style={{ color: "#24B81F", textShadow: "0 0 6px #24B81F66" }}
+                    >
+                        {sumDuration(data)}
+                    </span>
+                </p>
+
+                <button
+                    className="rounded-2xl border border-[#1e1e1e] bg-[#3387B9] px-6 py-3
+                   font-vampire text-sm uppercase font-medium tracking-[0.12em] text-[#f7f9ef]
+                   transition-colors hover:bg-[#1e9a1a]
+                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24B81F]"
+                >
+                    Save playlist to library
+                </button>
+            </div>
         </div>
     );
 };
 
+{/* Statistic Meters Logic */ }
 const STATS = [
     { label: "ENRG", key: "energy", color: "#FFD319" },
-    { label: "DNCE", key: "danceability", color: "#FF4D6D" },
+    { label: "DNCE", key: "danceability", color: "#F41A2B" },
     { label: "MOOD", key: "valence", color: "#3387B9" },
 ] as const;
 
@@ -116,7 +142,7 @@ function StatMeter({ label, value, color }: { label: string; value?: number; col
 
     return (
         <div>
-            <div className="mb-1 flex justify-between font-quub text-[10px] font-medium uppercase tracking-[0.12em]">
+            <div className="mb-1 flex justify-between font-quub text-[10px] font-normal uppercase tracking-[0.12em]">
                 <span className="text-[#888]">{label}</span>
                 <span className="font-mono" style={{ color, textShadow: `0 0 6px ${color}66` }}>
                     {String(pct).padStart(3, "0")}
@@ -144,6 +170,17 @@ function StatMeter({ label, value, color }: { label: string; value?: number; col
             </div>
         </div>
     );
+}
+
+function formatDuration(ms: number): string {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+function sumDuration(data: MockResult): string {
+    const totalMs = data?.tracks.items.reduce((sum, track) => sum + track.duration_ms, 0) ?? 0;
+    return formatDuration(totalMs);
 }
 
 export default DraftPage;
