@@ -1,15 +1,23 @@
 openapi: 3.0.3
 info:
-  title: Demo API
-  description: My first API-first Spring Boot API
+  title: Listify Backend API
+  description: 
+    This is the backend API for Listify, a music discovery and playlist creation
+    application that integrates with Spotify. It provides endpoints for user
+    authentication, song recommendations based on audio features, track previews,
+    and playlist creation.
   version: 1.0.0
 
 servers:
   - url: http://localhost:8081
 
 tags:
-  - name: Greeting
-    description: Greeting endpoints
+  - name: Auth
+    description: Spotify authentication endpoints
+  - name: Music
+    description: Music discovery and preview endpoints
+  - name: Playlists
+    description: Playlist creation endpoints
 
 paths:
   /auth/login/spotify:
@@ -44,26 +52,215 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/hello:
+  /api/songs/recommendations:
     get:
       tags:
-        - Greeting
-      summary: Say hello
-      operationId: hello
+        - Music
+      summary: Get songs that match Spotify-style audio feature parameters
+      operationId: getRecommendedSongs
+      description: >
+        Returns a list of songs that match the supplied Spotify audio feature
+        filters such as danceability, energy, instrumentalnes...
+        TODO: Check all the parameters and their ranges against the Spotify API documentation to ensure they are correct.
       parameters:
-        - name: name
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Number of songs to return.
+        - name: acousticness
           in: query
           required: false
           schema:
-            type: string
-            default: World
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+        - name: danceability
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+        - name: duration_ms
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: energy
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+        - name: instrumentalness
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 11
+        - name: liveness
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+        - name: loudness
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+        - name: mode
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: popularity
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - name: speechiness
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+        - name: tempo
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+        - name: time_signature
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 14
+        - name: valence
+          in: query
+          required: false
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
       responses:
         '200':
-          description: Successful greeting
+          description: List of matching songs
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GreetingResponse'
+                $ref: '#/components/schemas/SongSearchResponse'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to retrieve recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/tracks/{trackId}/preview:
+    get:
+      tags:
+        - Music
+      summary: Get a preview sample for a song
+      operationId: getTrackPreview
+      description: >
+        Returns a short audio preview for a track using the same concept as the
+        Spotify Web API preview_url field.
+      parameters:
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Spotify-style track identifier.
+      responses:
+        '200':
+          description: Audio preview available
+          content:
+            audio/mpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Track not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to retrieve preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/playlists:
+    post:
+      tags:
+        - Playlists
+      summary: Create a playlist from song IDs
+      operationId: createPlaylist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlaylistRequest'
+      responses:
+        '201':
+          description: Playlist created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistResponse'
+        '400':
+          description: Invalid playlist payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create playlist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -89,9 +286,64 @@ components:
           - error
           - message
 
-    GreetingResponse:
+    SongItem:
       type: object
       properties:
-        message:
+        title:
           type: string
-          example: Hello, World!
+          example: Midnight City
+        artist:
+          type: string
+          example: M83
+        length:
+          type: string
+          example: 03:43
+        songId:
+          type: string
+          example: 4aKdmOXdUKfITthWswfQ
+        songIcon:
+          type: string
+          format: uri
+          example: https://i.scdn.co/image/ab67616d0000b2734a2f1c2f3d4e5f6a7b8c9d0e
+        previewUrl:
+          type: string
+          format: uri
+          example: https://audio-ssl.itunes.apple.com/apple-assets-us-ipv4/p123456789/vod/123456789.mp4
+      required:
+        - title
+        - artist
+        - length
+        - songId
+        - songIcon
+
+    SongSearchResponse:
+      type: object
+      properties:
+        songs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SongItem'
+      required:
+        - songs
+
+    CreatePlaylistRequest:
+      type: object
+      properties:
+        songIds:
+          type: array
+          items:
+            type: string
+          example:
+            - 4aKdmOXdUKfITthWswfQ
+            - 7xGfFoTpQ2qVdQ3K4mQ5c
+      required:
+        - songIds
+
+    PlaylistResponse:
+      type: object
+      properties:
+        playlistId:
+          type: string
+          example: pl_123456789
+      required:
+        - playlistId
