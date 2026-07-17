@@ -94,7 +94,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/openApi/openapi.yaml</inputSpec>
 							<generatorName>spring</generatorName>
 							<apiPackage>com.jatitoto.listify.api</apiPackage>
 							<modelPackage>com.jatitoto.listify.model</modelPackage>

@@ -1,0 +1,28 @@
+opencollection: 1.0.0
+
+info:
+  name: bruno-api-requests
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  variables:
+    - name: PORT
+      value: "8081"
+    - name: URL
+      value: "{{BASE_URL}}:{{PORT}}"
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git
