@@ -1,0 +1,26 @@
+info:
+  name: create playlist
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{URL}}/api/playlists"
+  body:
+    type: json
+    data: |-
+      {
+        "songIds": [
+          "a4e25",
+          "b7f31",
+          "c9d42",
+          "e1a08"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
