@@ -1,8 +1,13 @@
-﻿const imgEllipse5 = "http://localhost:3845/assets/74fff0ec14bff54456d34d392831e3ffba627ef4.svg";
+﻿import { useNavigate } from "react-router-dom";
+let sessionIdMock = (Math.random() * 0xFFFFFFFFFFFFF).toString(16).slice(0, 10) // Todo thing about or remove
+
+const imgEllipse5 = "http://localhost:3845/assets/74fff0ec14bff54456d34d392831e3ffba627ef4.svg";
 const imgEllipse6 = "http://localhost:3845/assets/34f3bc866a904eb6a85a520122f57fa2cfca44cc.svg";
 const imgEllipse8 = "http://localhost:3845/assets/1e6aa8f685eab8418b42ade99a128256234ad07b.svg";
 
 export function ListPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-12 py-8 max-w-5xl mx-auto pb-32">
       <div className="flex flex-col gap-2">
@@ -59,10 +64,10 @@ export function ListPage() {
       </div>
 
       <div className="flex justify-center mt-8">
-        <button className="bg-[#1e1e1e] text-[#f7f9ef] font-quub font-bold text-xl px-12 py-4 rounded-xl hover:bg-black transition-colors rotate-[-1.5deg]">
+        <button className="bg-[#1e1e1e] text-[#f7f9ef] font-quub font-bold text-xl px-14 py-6 rounded-xl hover:bg-black transition-colors"
+                onClick={() => navigate(`/list/${sessionIdMock}/draft`)}>
           Start playlist creation
-        </button>['QUUB:Bold_R',sans-serif] justify-center leading-[0] not-italic relative text-[#f7f9ef] text-[28px] tracking-[-0.84px] whitespace-nowrap" data-node-id="48:1686"
-        <p className="leading-[1.2]">Start playlist creation</p>
+        </button>
       </div>
     </div>
   );
