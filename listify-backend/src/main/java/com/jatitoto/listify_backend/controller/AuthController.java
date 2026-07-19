@@ -7,14 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jatitoto.listify.api.AuthApi;
 import com.jatitoto.listify_backend.service.SpotifyAuthService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"}, allowCredentials = "true")
 public class AuthController implements AuthApi {
     private final SpotifyAuthService spotifyAuthService;
-
-    public AuthController(SpotifyAuthService spotifyAuthService) {
-        this.spotifyAuthService = spotifyAuthService;
-    }
 
     @Override
     public ResponseEntity<String> initiateSpotifyLogin() {

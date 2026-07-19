@@ -16,6 +16,7 @@ export function SpotifyCallbackPage() {
     }
 
     if (authorized === 'true') {
+      window.alert('Spotify login successful!');
       navigate('/main');
       return;
     }
