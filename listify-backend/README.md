@@ -25,10 +25,14 @@ Install from https://code.visualstudio.com and add these two extensions:
 
 ## Running the application
 
-Clone the repository, open a terminal in the project root, and run:
+Clone the repository, open a terminal in the backend-project root, and run:
 
 ```bash
 mvn spring-boot:run
+```
+
+```powershell
+.\mvnw spring-boot:run
 ```
 
 The application starts on `http://localhost:8081` (Port is configured in [application.properties](src/main/resources/application.properties)).

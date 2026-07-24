@@ -1,0 +1,882 @@
+{
+    "tracks": {
+        "href": "https://api.spotify.com/v1/search?query=year%3A2010-2012+genre%3Apop&type=track&offset=0&limit=10",
+        "items": [
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 11,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum1"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum1",
+                    "id": "mockalbum1",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=1",
+                            "height": 640,
+                            "width": 640
+                        },
+                        {
+                            "url": "https://picsum.photos/300/300?random=1",
+                            "height": 300,
+                            "width": 300
+                        },
+                        {
+                            "url": "https://picsum.photos/64/64?random=1",
+                            "height": 64,
+                            "width": 64
+                        }
+                    ],
+                    "name": "21",
+                    "release_date": "2010-11-19",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum1",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist1"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist1",
+                            "id": "mockartist1",
+                            "name": "Adele",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist1"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist1"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist1",
+                        "id": "mockartist1",
+                        "name": "Adele",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist1"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 228293,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "GBBKS1000292"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack1"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack1",
+                "id": "mocktrack1",
+                "is_local": false,
+                "name": "Rolling in the Deep",
+                "popularity": 95,
+                "energy": 0.8,
+                "danceability": 0.7,
+                "valence": 0.6,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview1",
+                "track_number": 1,
+                "type": "track",
+                "uri": "spotify:track:mocktrack1"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 11,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum1"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum1",
+                    "id": "mockalbum1",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=2",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "21",
+                    "release_date": "2011-01-24",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum1",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist1"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist1",
+                            "id": "mockartist1",
+                            "name": "Adele",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist1"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist1"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist1",
+                        "id": "mockartist1",
+                        "name": "Adele",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist1"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 285040,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "GBBKS1100098"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack2"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack2",
+                "id": "mocktrack2",
+                "is_local": false,
+                "name": "Someone Like You",
+                "popularity": 93,
+                "energy": 0.4,
+                "danceability": 0.5,
+                "valence": 0.6,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview2",
+                "track_number": 11,
+                "type": "track",
+                "uri": "spotify:track:mocktrack2"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 12,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum2"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum2",
+                    "id": "mockalbum2",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=8",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Teenage Dream",
+                    "release_date": "2010-08-24",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum2",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist2"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist2",
+                            "id": "mockartist2",
+                            "name": "Katy Perry",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist2"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist2"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist2",
+                        "id": "mockartist2",
+                        "name": "Katy Perry",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist2"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 227973,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "USCA21001262"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack3"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack3",
+                "id": "mocktrack3",
+                "is_local": false,
+                "name": "Firework",
+                "popularity": 91,
+                "energy": 0.8,
+                "danceability": 0.7,
+                "valence": 0.6,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview3",
+                "track_number": 7,
+                "type": "track",
+                "uri": "spotify:track:mocktrack3"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 14,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum3"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum3",
+                    "id": "mockalbum3",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=5",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Talk That Talk",
+                    "release_date": "2011-11-18",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum3",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist3"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist3",
+                            "id": "mockartist3",
+                            "name": "Rihanna",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist3"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist3"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist3",
+                        "id": "mockartist3",
+                        "name": "Rihanna",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist3"
+                    },
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist4"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist4",
+                        "id": "mockartist4",
+                        "name": "Calvin Harris",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist4"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 215773,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "USUM71111587"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack4"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack4",
+                "id": "mocktrack4",
+                "is_local": false,
+                "name": "We Found Love",
+                "popularity": 92,
+                "energy": 0.8,
+                "danceability": 0.9,
+                "valence": 0.7,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview4",
+                "track_number": 2,
+                "type": "track",
+                "uri": "spotify:track:mocktrack4"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 16,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum4"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum4",
+                    "id": "mockalbum4",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=3",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Kiss",
+                    "release_date": "2012-09-14",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum4",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist5"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist5",
+                            "id": "mockartist5",
+                            "name": "Carly Rae Jepsen",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist5"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist5"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist5",
+                        "id": "mockartist5",
+                        "name": "Carly Rae Jepsen",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist5"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 193400,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "CAM120110001"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack5"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack5",
+                "id": "mocktrack5",
+                "is_local": false,
+                "name": "Call Me Maybe",
+                "popularity": 90,
+                "energy": 0.8,
+                "danceability": 0.9,
+                "valence": 0.8,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview5",
+                "track_number": 2,
+                "type": "track",
+                "uri": "spotify:track:mocktrack5"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 16,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum5"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum5",
+                    "id": "mockalbum5",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=6",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Sorry for Party Rocking",
+                    "release_date": "2011-06-17",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum5",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist6"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist6",
+                            "id": "mockartist6",
+                            "name": "LMFAO",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist6"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist6"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist6",
+                        "id": "mockartist6",
+                        "name": "LMFAO",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist6"
+                    },
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist7"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist7",
+                        "id": "mockartist7",
+                        "name": "Lauren Bennett",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist7"
+                    },
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist8"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist8",
+                        "id": "mockartist8",
+                        "name": "GoonRock",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist8"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 262000,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "USUM71104122"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack6"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack6",
+                "id": "mocktrack6",
+                "is_local": false,
+                "name": "Party Rock Anthem",
+                "popularity": 89,
+                "energy": 0.9,
+                "danceability": 0.8,
+                "valence": 0.9,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview6",
+                "track_number": 4,
+                "type": "track",
+                "uri": "spotify:track:mocktrack6"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 10,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum6"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum6",
+                    "id": "mockalbum6",
+                    "images": [
+                        {
+                            "url": "https://i.scdn.co/image/mockimage6",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Doo-Wops & Hooligans",
+                    "release_date": "2010-10-04",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum6",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist9"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist9",
+                            "id": "mockartist9",
+                            "name": "Bruno Mars",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist9"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist9"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist9",
+                        "id": "mockartist9",
+                        "name": "Bruno Mars",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist9"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 223000,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "USAT21001883"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack7"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack7",
+                "id": "mocktrack7",
+                "is_local": false,
+                "name": "Grenade",
+                "popularity": 88,
+                "energy": 0.8,
+                "danceability": 0.7,
+                "valence": 0.5,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview7",
+                "track_number": 2,
+                "type": "track",
+                "uri": "spotify:track:mocktrack7"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 14,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum7"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum7",
+                    "id": "mockalbum7",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=2",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Born This Way",
+                    "release_date": "2011-05-23",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum7",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist10"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist10",
+                            "id": "mockartist10",
+                            "name": "Lady Gaga",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist10"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist10"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist10",
+                        "id": "mockartist10",
+                        "name": "Lady Gaga",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist10"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 260120,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "USUM71100638"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack8"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack8",
+                "id": "mocktrack8",
+                "is_local": false,
+                "name": "Born This Way",
+                "popularity": 87,
+                "energy": 0.9,
+                "danceability": 0.8,
+                "valence": 0.7,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview8",
+                "track_number": 1,
+                "type": "track",
+                "uri": "spotify:track:mocktrack8"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 13,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum8"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum8",
+                    "id": "mockalbum8",
+                    "images": [
+                        {
+                            "url": "https://picsum.photos/640/640?random=4",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Stronger",
+                    "release_date": "2011-10-21",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum8",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist11"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist11",
+                            "id": "mockartist11",
+                            "name": "Kelly Clarkson",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist11"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist11"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist11",
+                        "id": "mockartist11",
+                        "name": "Kelly Clarkson",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist11"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 221947,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "USRC11102010"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack9"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack9",
+                "id": "mocktrack9",
+                "is_local": false,
+                "name": "Stronger (What Doesn't Kill You)",
+                "popularity": 86,
+                "energy": 0.8,
+                "danceability": 0.9,
+                "valence": 0.7,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview9",
+                "track_number": 5,
+                "type": "track",
+                "uri": "spotify:track:mocktrack9"
+            },
+            {
+                "album": {
+                    "album_type": "album",
+                    "total_tracks": 14,
+                    "available_markets": [
+                        "US",
+                        "GB",
+                        "CA",
+                        "AU",
+                        "DE"
+                    ],
+                    "external_urls": {
+                        "spotify": "https://open.spotify.com/album/mockalbum9"
+                    },
+                    "href": "https://api.spotify.com/v1/albums/mockalbum9",
+                    "id": "mockalbum9",
+                    "images": [
+                        {
+                            "url": "https://i.scdn.co/image/mockimage9",
+                            "height": 640,
+                            "width": 640
+                        }
+                    ],
+                    "name": "Nothing but the Beat",
+                    "release_date": "2011-08-26",
+                    "release_date_precision": "day",
+                    "type": "album",
+                    "uri": "spotify:album:mockalbum9",
+                    "artists": [
+                        {
+                            "external_urls": {
+                                "spotify": "https://open.spotify.com/artist/mockartist12"
+                            },
+                            "href": "https://api.spotify.com/v1/artists/mockartist12",
+                            "id": "mockartist12",
+                            "name": "David Guetta",
+                            "type": "artist",
+                            "uri": "spotify:artist:mockartist12"
+                        }
+                    ]
+                },
+                "artists": [
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist12"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist12",
+                        "id": "mockartist12",
+                        "name": "David Guetta",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist12"
+                    },
+                    {
+                        "external_urls": {
+                            "spotify": "https://open.spotify.com/artist/mockartist13"
+                        },
+                        "href": "https://api.spotify.com/v1/artists/mockartist13",
+                        "id": "mockartist13",
+                        "name": "Sia",
+                        "type": "artist",
+                        "uri": "spotify:artist:mockartist13"
+                    }
+                ],
+                "available_markets": [
+                    "US",
+                    "GB",
+                    "CA",
+                    "AU",
+                    "DE"
+                ],
+                "disc_number": 1,
+                "duration_ms": 245000,
+                "explicit": false,
+                "external_ids": {
+                    "isrc": "GB28K1100025"
+                },
+                "external_urls": {
+                    "spotify": "https://open.spotify.com/track/mocktrack10"
+                },
+                "href": "https://api.spotify.com/v1/tracks/mocktrack10",
+                "id": "mocktrack10",
+                "is_local": false,
+                "name": "Titanium",
+                "popularity": 90,
+                "energy": 0.8,
+                "danceability": 0.7,
+                "valence": 0.6,
+                "preview_url": "https://p.scdn.co/mp3-preview/mockpreview10",
+                "track_number": 8,
+                "type": "track",
+                "uri": "spotify:track:mocktrack10"
+            }
+        ],
+        "limit": 10,
+        "next": null,
+        "offset": 0,
+        "previous": null,
+        "total": 10
+    }
+}
