@@ -55,7 +55,7 @@ public class SpotifyAuthService {
 	private Map <String, String> stateToCodeVerifierMap = new ConcurrentHashMap<>();
 
     public ResponseEntity<String> initiateSpotifyLogin() {
-        HttpSession session = getCurrentSession();
+        HttpSession session = UtilService.getCurrentSession();
 
         if (clientId.isBlank() || clientSecret.isBlank()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -89,7 +89,7 @@ public class SpotifyAuthService {
 		logger.info("Handling Spotify callback with\ncode: {}\nstate: {}\nerror: {}", code, state, error);
         try {
 			String codeVerifier = stateToCodeVerifierMap.get(state);
-            HttpSession session = getCurrentSession();
+            HttpSession session = UtilService.getCurrentSession();
 
             if (error != null || code == null || state == null) {
                 return redirectToFrontend("error=" + encode(error != null ? error : "invalid_request"));
@@ -156,15 +156,7 @@ public class SpotifyAuthService {
                 .build();
     }
 
-    private HttpSession getCurrentSession() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            throw new IllegalStateException("No request context available");
-        }
 
-        HttpServletRequest request = attributes.getRequest();
-        return request.getSession(true);
-    }
 
     private String createCodeChallenge(String codeVerifier) {
         try {

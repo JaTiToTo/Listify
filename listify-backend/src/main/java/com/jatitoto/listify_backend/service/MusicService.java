@@ -13,8 +13,14 @@ import org.springframework.stereotype.Service;
 import com.jatitoto.listify.model.SongItem;
 import com.jatitoto.listify.model.SongSearchResponse;
 
+import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class MusicService {
+    private static final Logger logger = LoggerFactory.getLogger(SpotifyAuthService.class);
+
 
     public ResponseEntity<SongSearchResponse> getRecommendedSongs(
             Integer limit,
@@ -32,6 +38,8 @@ public class MusicService {
             Float tempo,
             Integer timeSignature,
             Float valence) {
+        HttpSession session = UtilService.getCurrentSession();
+        logger.info("\nSession ID: {}", session.getId());
         SongItem song1 = new SongItem();
         song1.setTitle("Midnight City");
         song1.setArtist("M83");
