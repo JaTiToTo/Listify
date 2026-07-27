@@ -108,7 +108,7 @@ public class SpotifyAuthService {
             String accessToken = tokenResponse.path("access_token").asText("");
             String refreshToken = tokenResponse.path("refresh_token").asText("");
             String expiresIn = tokenResponse.path("expires_in").asText("");
-					 
+
             session.setAttribute("spotify_access_token", accessToken);
             session.setAttribute("spotify_refresh_token", refreshToken);
             session.setAttribute("spotify_token_expires_in", expiresIn);
