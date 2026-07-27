@@ -1,18 +1,19 @@
-﻿import { useNavigate } from "react-router-dom";
-let sessionIdMock = (Math.random() * 0xFFFFFFFFFFFFF).toString(16).slice(0, 10) // Todo thing about or remove
+import { useNavigate } from "react-router-dom";
+
+let sessionIdMock = (Math.random() * 0xFFFFFFFFFFFFF).toString(16).slice(0, 10); // Todo: think about or remove
 
 const imgEllipse5 = "http://localhost:3845/assets/74fff0ec14bff54456d34d392831e3ffba627ef4.svg";
 const imgEllipse6 = "http://localhost:3845/assets/34f3bc866a904eb6a85a520122f57fa2cfca44cc.svg";
 const imgEllipse8 = "http://localhost:3845/assets/1e6aa8f685eab8418b42ade99a128256234ad07b.svg";
 
-export function ListPage() {
+export function CreatePage() {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-12 py-8 max-w-5xl mx-auto pb-32">
       <div className="flex flex-col gap-2">
-        <h2 className="font-vampire text-4xl text-[#1e1e1e] font-bold tracking-tight">Customize your own playlist</h2>
-        <p className="text-gray-600 font-quub font-semibold text-lg">Custom</p>
+        <h2 className="font-vampire text-4xl text-[#1e1e1e] font-bold tracking-tight">Create your own playlist</h2>
+        <p className="text-gray-600 font-quub font-semibold text-lg">Create</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -64,8 +65,10 @@ export function ListPage() {
       </div>
 
       <div className="flex justify-center mt-8">
-        <button className="bg-[#1e1e1e] text-[#f7f9ef] font-quub font-bold text-xl px-14 py-6 rounded-xl hover:bg-black transition-colors"
-                onClick={() => navigate(`/list/${sessionIdMock}/draft`)}>
+        <button
+          className="bg-[#1e1e1e] text-[#f7f9ef] font-quub font-bold text-xl px-14 py-6 rounded-xl hover:bg-black transition-colors"
+          onClick={() => navigate(`/create/${sessionIdMock}/draft`)}
+        >
           Start playlist creation
         </button>
       </div>
