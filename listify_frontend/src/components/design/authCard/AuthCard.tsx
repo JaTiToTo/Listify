@@ -9,9 +9,6 @@ async function handleSpotifyLogin() {
 
   const text = await response.text();
 
-  console.log("Status:", response.status);
-  console.log("Body:", text);
-
   if (!response.ok) {
     throw new Error(text);
   }
@@ -45,23 +42,7 @@ export default function AuthCard() {
       </div>
       <button
         onClick={async () => {
-          // try {
-          //   const res = await fetch("http://localhost:8081/auth/login/spotify");
-          //   if (!res.ok) {
-          //     throw new Error("Unable to start Spotify login");
-          //   }
-          //   const url = await res.text();
-          //   window.location.href = url;
-          // } catch (error) {
-          //   console.error(error);
-          //   window.alert(
-          //     "Spotify login could not be started. Please check your backend configuration.",
-          //   );
-          // }
-          console.log("Spotify login button clicked");
           await handleSpotifyLogin();
-
-          window.alert("Spotify login should be done");
         }}
         className="auth-card__spotify"
       >
