@@ -26,6 +26,7 @@ type SliderCardProps = {
   step: number;
   valueLabel: (value: number) => string;
   valueBadgeWidthClassName: string;
+  accentColor: string;
   onChange: (value: number) => void;
 };
 
@@ -40,9 +41,12 @@ type FilterDefinition = {
   step: number;
   valueLabel: (value: number) => string;
   valueBadgeWidthClassName: string;
+  accentColor: string;
 };
 
 const sliderCardClassName = "rounded-3xl border border-[#e0e0e0] bg-white p-6 shadow-sm";
+
+const cassetteStripColors = ["#D94B3D", "#F0B429", "#24B81F", "#3387B9"];
 
 const defaultFilters: FilterState = {
   acousticness: 50,
@@ -67,6 +71,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value} tracks`,
     valueBadgeWidthClassName: "min-w-[11ch]",
+    accentColor: "#24B81F",
   },
   {
     key: "tempo",
@@ -79,6 +84,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value} BPM`,
     valueBadgeWidthClassName: "min-w-[9ch]",
+    accentColor: "#3387B9",
   },
   {
     key: "loudness",
@@ -108,7 +114,8 @@ const filterDefinitions: FilterDefinition[] = [
 
       return "Very loud";
     },
-    valueBadgeWidthClassName: "min-w-[11ch]",
+    valueBadgeWidthClassName: "min-w-[15ch]",
+    accentColor: "#D94B3D",
   },
   {
     key: "acousticness",
@@ -121,6 +128,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value}%`,
     valueBadgeWidthClassName: "min-w-[7ch]",
+    accentColor: "#F0B429",
   },
   {
     key: "danceability",
@@ -133,6 +141,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value}%`,
     valueBadgeWidthClassName: "min-w-[7ch]",
+    accentColor: "#3387B9",
   },
   {
     key: "energy",
@@ -145,6 +154,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value}%`,
     valueBadgeWidthClassName: "min-w-[7ch]",
+    accentColor: "#24B81F",
   },
   {
     key: "instrumentalness",
@@ -157,6 +167,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value}%`,
     valueBadgeWidthClassName: "min-w-[7ch]",
+    accentColor: "#D94B3D",
   },
   {
     key: "valence",
@@ -169,6 +180,7 @@ const filterDefinitions: FilterDefinition[] = [
     step: 1,
     valueLabel: (value) => `${value}%`,
     valueBadgeWidthClassName: "min-w-[7ch]",
+    accentColor: "#F0B429",
   },
 ];
 
@@ -183,6 +195,7 @@ function SliderCard({
   step,
   valueLabel,
   valueBadgeWidthClassName,
+  accentColor,
   onChange,
 }: SliderCardProps) {
   const progress = ((value - min) / (max - min)) * 100;
@@ -194,14 +207,32 @@ function SliderCard({
           <h3 className="font-quub text-xl font-bold text-[#1e1e1e]">{title}</h3>
           <p className="max-w-sm text-sm leading-6 text-gray-600">{description}</p>
         </div>
-        <div className={`flex items-center justify-center rounded-full border border-[#1e1e1e] bg-[#f7f9ef] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e] whitespace-nowrap ${valueBadgeWidthClassName}`}>
+        <div
+          className={`flex items-center justify-center rounded-full border border-[#1e1e1e] bg-[#f7f9ef] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e] whitespace-nowrap ${valueBadgeWidthClassName}`}
+          style={{ boxShadow: `0 0 0 1px ${accentColor}33 inset, 0 0 18px ${accentColor}22` }}
+        >
           {valueLabel(value)}
         </div>
       </div>
 
       <div className="mt-6">
-        <div className="relative h-3 rounded-full bg-[#ececec]">
-          <div className="absolute left-0 top-0 h-3 rounded-full bg-[#1e1e1e]" style={{ width: `${progress}%` }} />
+        <div className="relative h-4 rounded-full border border-[#1e1e1e] bg-[#ececec] shadow-[inset_0_2px_0_rgba(255,255,255,0.75),inset_0_-2px_0_rgba(0,0,0,0.08)]">
+          <div
+            className="absolute left-0 top-1/2 h-2 -translate-y-1/2 rounded-full"
+            style={{
+              width: `${progress}%`,
+              backgroundImage: `linear-gradient(90deg, ${accentColor} 0%, ${accentColor}dd 100%)`,
+              boxShadow: `0 0 10px ${accentColor}55`,
+            }}
+          />
+          <div
+            className="absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#1e1e1e]"
+            style={{
+              left: `${progress}%`,
+              backgroundImage: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96) 0 18%, ${accentColor} 19% 100%)`,
+              boxShadow: `0 0 0 3px rgba(247,249,239,0.95), 0 0 16px ${accentColor}66, 0 4px 0 #1e1e1e`,
+            }}
+          />
           <input
             aria-label={title}
             type="range"
@@ -210,11 +241,11 @@ function SliderCard({
             step={step}
             value={value}
             onChange={(event) => onChange(Number(event.target.value))}
-            className="absolute inset-0 h-3 w-full cursor-pointer appearance-none bg-transparent accent-[#1e1e1e]"
+            className="absolute inset-0 h-4 w-full cursor-pointer appearance-none bg-transparent opacity-0"
           />
         </div>
 
-        <div className="mt-3 flex justify-between text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
+        <div className="mt-3 flex justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">
           <span>{leftLabel}</span>
           <span>{rightLabel}</span>
         </div>
@@ -255,6 +286,7 @@ export function CreatePage() {
             value={filters[filterDefinitions[0].key]}
             valueLabel={filterDefinitions[0].valueLabel}
             valueBadgeWidthClassName={filterDefinitions[0].valueBadgeWidthClassName}
+              accentColor={filterDefinitions[0].accentColor}
             onChange={setFilterValue(filterDefinitions[0].key)}
           />
 
@@ -271,6 +303,7 @@ export function CreatePage() {
               value={filters[filterDefinitions[1].key]}
               valueLabel={filterDefinitions[1].valueLabel}
               valueBadgeWidthClassName={filterDefinitions[1].valueBadgeWidthClassName}
+              accentColor={filterDefinitions[1].accentColor}
               onChange={setFilterValue(filterDefinitions[1].key)}
             />
             <SliderCard
@@ -285,6 +318,7 @@ export function CreatePage() {
               value={filters[filterDefinitions[2].key]}
               valueLabel={filterDefinitions[2].valueLabel}
               valueBadgeWidthClassName={filterDefinitions[2].valueBadgeWidthClassName}
+              accentColor={filterDefinitions[2].accentColor}
               onChange={setFilterValue(filterDefinitions[2].key)}
             />
           </div>
@@ -302,6 +336,7 @@ export function CreatePage() {
               value={filters[filterDefinitions[6].key]}
               valueLabel={filterDefinitions[6].valueLabel}
               valueBadgeWidthClassName={filterDefinitions[6].valueBadgeWidthClassName}
+              accentColor={filterDefinitions[6].accentColor}
               onChange={setFilterValue(filterDefinitions[6].key)}
             />
             <SliderCard
@@ -316,6 +351,7 @@ export function CreatePage() {
               value={filters[filterDefinitions[7].key]}
               valueLabel={filterDefinitions[7].valueLabel}
               valueBadgeWidthClassName={filterDefinitions[7].valueBadgeWidthClassName}
+              accentColor={filterDefinitions[7].accentColor}
               onChange={setFilterValue(filterDefinitions[7].key)}
             />
           </div>
@@ -334,6 +370,7 @@ export function CreatePage() {
                 value={filters[filterDefinition.key]}
                 valueLabel={filterDefinition.valueLabel}
                 valueBadgeWidthClassName={filterDefinition.valueBadgeWidthClassName}
+                accentColor={filterDefinition.accentColor}
                 onChange={setFilterValue(filterDefinition.key)}
               />
             ))}
@@ -355,9 +392,19 @@ export function CreatePage() {
 
       <div className="flex justify-center">
         <button
-          className="rounded-xl bg-[#1e1e1e] px-14 py-6 font-quub text-xl font-bold text-[#f7f9ef] transition-colors hover:bg-black"
+          className="group relative overflow-hidden rounded-[30px] border-[3px] border-[#1e1e1e] bg-[#efe8cf] px-14 py-6 font-quub text-xl font-bold text-[#1e1e1e] shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
           onClick={() => navigate(`/create/${sessionIdMock}/draft`)}
         >
+          <span className="absolute inset-x-0 top-0 flex h-3 overflow-hidden">
+            {cassetteStripColors.map((color) => (
+              <span key={color} className="h-full flex-1" style={{ backgroundColor: color }} />
+            ))}
+          </span>
+          <span className="absolute left-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#1e1e1e] bg-white shadow-[0_3px_0_#1e1e1e]">
+            <span className="ml-0.5 border-y-4 border-y-transparent border-l-7 border-l-[#1e1e1e]" />
+          </span>
+          <span className="absolute right-4 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full border-2 border-[#1e1e1e] bg-white shadow-[0_3px_0_#1e1e1e]" />
+          <span className="absolute inset-x-5 bottom-2 h-1 rounded-full bg-[#24B81F]/30" />
           Create draft playlist
         </button>
       </div>

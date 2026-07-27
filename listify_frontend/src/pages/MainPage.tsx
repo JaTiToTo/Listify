@@ -70,9 +70,9 @@ export function MainPage() {
       <section className="flex flex-col gap-6 font-sans sm:gap-8">
         <div className="flex flex-col gap-2">
           <h2 className="max-w-2xl font-vampire text-2xl font-bold leading-tight tracking-tight text-[#1e1e1e] sm:text-4xl">
-            Create your own playlist
+            Customize your own playlist
           </h2>
-          <p className="font-quub text-base font-semibold text-gray-600 sm:text-lg">Create</p>
+          <p className="font-quub text-base font-semibold text-gray-600 sm:text-lg">Custom</p>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1fr_0.95fr] lg:gap-6">
@@ -115,7 +115,7 @@ export function MainPage() {
                   <h4 className="font-quub text-lg font-bold text-[#1e1e1e] sm:text-2xl">Cassette preview</h4>
                 </div>
                 <span className="inline-flex items-center rounded-full border border-[#1e1e1e] bg-white px-3 py-1 text-[11px] font-semibold text-[#1e1e1e] transition-transform duration-200 group-hover:-translate-y-0.5 sm:text-xs">
-                  Open builder →
+                  Open builder
                 </span>
               </div>
 
@@ -123,7 +123,7 @@ export function MainPage() {
                 <div className="w-full max-w-[180px] rounded-[22px] border border-[#e0e0e0] bg-white p-3 shadow-sm transition-transform duration-200 group-hover:-rotate-1 group-hover:scale-[1.01] sm:max-w-sm sm:rounded-[24px] sm:p-5">
                   <img
                     src={cassetteImage}
-                    alt="Cassette illustration for playlist creation"
+                    alt="Cassette illustration for custom playlist creation"
                     className="h-full w-full rounded-[16px] object-cover sm:rounded-[18px]"
                   />
                 </div>
