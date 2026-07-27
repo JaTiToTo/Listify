@@ -189,6 +189,7 @@ listify-backend/target/
 listify-backend/.mvn/wrapper/maven-wrapper.jar
 !listify-backend/**/src/main/**/target/
 !listify-backend/**/src/test/**/target/
+.env
 
 ### STS ###
 listify-backend/.apt_generated

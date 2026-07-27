@@ -21,10 +21,18 @@ export default function AuthCard() {
         <div className="auth-card__divider" />
       </div>
       <button onClick={async () => {
-        const res = await fetch("http://localhost:8081/auth/login/spotify");
-        const url = await res.text();
-        window.location.href = url;
-}} className="auth-card__spotify">
+        try {
+          const res = await fetch("http://localhost:8081/auth/login/spotify");
+          if (!res.ok) {
+            throw new Error('Unable to start Spotify login');
+          }
+          const url = await res.text();
+          window.location.href = url;
+        } catch (error) {
+          console.error(error);
+          window.alert('Spotify login could not be started. Please check your backend configuration.');
+        }
+      }} className="auth-card__spotify">
         <div className="auth-card__spotifyText">Spotify</div>
         <div className="auth-card__spotifyIcon">
           <img alt="" src={spotifyIcon} />

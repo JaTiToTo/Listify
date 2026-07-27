@@ -52,6 +52,45 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /auth/callback:
+    get:
+      summary: Handle Spotify OAuth callback
+      operationId: spotifyCallback
+      description: >
+        Receives the authorization code or error returned by Spotify after the
+        user authorizes the app, exchanges the code for tokens, and redirects
+        the browser to the frontend callback route.
+      tags:
+        - Auth
+      parameters:
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Authorization code returned by Spotify.
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+          description: State parameter used to prevent CSRF.
+        - name: error
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Error returned by Spotify when authorization fails.
+      responses:
+        '302':
+          description: Redirects to the frontend callback URL after the OAuth flow completes.
+        '500':
+          description: Failed to exchange the authorization code for an access token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/songs/recommendations:
     get:
       tags:
