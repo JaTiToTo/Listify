@@ -102,7 +102,7 @@ export function RootLayout() {
               </div>
               <NavLink to="/create" className={navLinkClass} onClick={() => setIsMobileNavOpen(false)}>
                 <img src={iconSmile} alt="" className="w-6 h-6" />
-                <span>Create playlist</span>
+                <span>Customize playlist</span>
               </NavLink>
             </nav>
           </div>
