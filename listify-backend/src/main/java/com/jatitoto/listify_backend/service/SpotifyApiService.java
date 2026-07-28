@@ -1,5 +1,7 @@
 package com.jatitoto.listify_backend.service;
 
+import static com.jatitoto.listify_backend.mapper.SpotifyApiResponseMapper.mapTracksToSongItems;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -24,7 +26,15 @@ import com.jatitoto.listify.model.SongItem;
 @Service
 public class SpotifyApiService {
     private static final Logger logger = LoggerFactory.getLogger(SpotifyApiService.class);
-    private static final String SPOTIFY_RECOMMENDATIONS_URL = "https://api.spotify.com/v1/recommendations";
+    private static final String SPOTIFY_API_BASE_URL = "https://api.spotify.com";
+    private static final String SPOTIFY_RECOMMENDATIONS_PATH = "/v1/recommendations";
+    private static final String SPOTIFY_SEARCH_PATH = "/v1/search";
+    private static final String SPOTIFY_RECOMMENDATIONS_URL = SPOTIFY_API_BASE_URL + SPOTIFY_RECOMMENDATIONS_PATH;
+    private static final String QUERY_PARAM_Q = "q";
+    private static final String QUERY_PARAM_TYPE = "type";
+    private static final String QUERY_PARAM_OFFSET = "offset";
+    private static final String QUERY_PARAM_LIMIT = "limit";
+    private static final String SEARCH_TYPE_TRACK = "track";
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -44,11 +54,13 @@ public class SpotifyApiService {
         String requestUrl = buildRecommendationsUrl(limit, acousticness, danceability, energy, instrumentalness, loudness, tempo,
                 valence);
 
+logger.info("Fetching Spotify recommendations with access token: {}", accessToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(requestUrl))
                 .header("Authorization", "Bearer " + accessToken)
                 .GET()
                 .build();
+        logger.info("Sending Spotify recommendations request to URL: {}", requestUrl);
 
         try {
             HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
@@ -65,6 +77,35 @@ public class SpotifyApiService {
             throw new IllegalStateException("Spotify recommendations request was interrupted", e);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse Spotify recommendations response", e);
+        }
+    }
+
+    public List<SongItem> searchTracks(String accessToken, String query, Integer offset, Integer limit) {
+        String requestUrl = buildSearchTracksUrl(query, offset, limit);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestUrl))
+                .header("Authorization", "Bearer " + accessToken)
+                .GET()
+                .build();
+        logger.info("Sending Spotify search request to URL: {}", requestUrl);
+
+        try {
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 400) {
+                logger.warn("Spotify search request failed with status {} and body {}", response.statusCode(),
+                        response.body());
+                throw new IllegalStateException("Spotify search request failed with status " + response.statusCode());
+            }
+
+            JsonNode jsonResponse = OBJECT_MAPPER.readTree(response.body());
+            logger.info(jsonResponse.toPrettyString());
+            return mapTracksToSongItems(jsonResponse.path("tracks").path("items"));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Spotify search request was interrupted", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to parse Spotify search response", e);
         }
     }
 
@@ -88,7 +129,22 @@ public class SpotifyApiService {
         putIfNotNull(queryParams, "target_tempo", tempo);
         putIfNotNull(queryParams, "target_valence", valence);
 
-        StringBuilder urlBuilder = new StringBuilder(SPOTIFY_RECOMMENDATIONS_URL);
+        return buildUrl(SPOTIFY_RECOMMENDATIONS_URL, queryParams);
+    }
+
+    private String buildSearchTracksUrl(String query, Integer offset, Integer limit) {
+        Map<String, String> queryParams = new LinkedHashMap<>();
+        queryParams.put(QUERY_PARAM_Q, query);
+        queryParams.put(QUERY_PARAM_TYPE, SEARCH_TYPE_TRACK);
+        queryParams.put(QUERY_PARAM_OFFSET, String.valueOf(offset));
+        queryParams.put(QUERY_PARAM_LIMIT, String.valueOf(limit));
+
+        String baseUrl = SPOTIFY_API_BASE_URL + SPOTIFY_SEARCH_PATH;
+        return buildUrl(baseUrl, queryParams);
+    }
+
+    private String buildUrl(String baseUrl, Map<String, String> queryParams) {
+        StringBuilder urlBuilder = new StringBuilder(baseUrl);
         urlBuilder.append("?");
 
         boolean isFirst = true;
@@ -109,59 +165,6 @@ public class SpotifyApiService {
         if (value != null) {
             queryParams.put(key, value.toString());
         }
-    }
-
-    private List<SongItem> mapTracksToSongItems(JsonNode tracks) {
-        List<SongItem> songs = new ArrayList<>();
-        if (!tracks.isArray()) {
-            return songs;
-        }
-
-        for (JsonNode track : tracks) {
-            SongItem songItem = new SongItem();
-            songItem.setTitle(track.path("name").asText(""));
-            songItem.setArtist(extractArtists(track.path("artists")));
-            songItem.setLength(formatTrackLength(track.path("duration_ms").asLong(0L)));
-            songItem.setSongId(track.path("id").asText(""));
-
-            String iconUrl = track.path("album").path("images").path(0).path("url").asText("");
-            if (iconUrl.isBlank()) {
-                iconUrl = "https://open.spotify.com";
-            }
-            songItem.setSongIcon(URI.create(iconUrl));
-
-            String previewUrl = track.path("preview_url").asText("");
-            if (!previewUrl.isBlank()) {
-                songItem.setPreviewUrl(URI.create(previewUrl));
-            }
-
-            songs.add(songItem);
-        }
-
-        return songs;
-    }
-
-    private String extractArtists(JsonNode artistsNode) {
-        if (!artistsNode.isArray()) {
-            return "";
-        }
-
-        List<String> artistNames = new ArrayList<>();
-        for (JsonNode artistNode : artistsNode) {
-            String name = artistNode.path("name").asText("");
-            if (!name.isBlank()) {
-                artistNames.add(name);
-            }
-        }
-
-        return String.join(", ", artistNames);
-    }
-
-    private String formatTrackLength(long durationMs) {
-        long totalSeconds = durationMs / 1000;
-        long minutes = totalSeconds / 60;
-        long seconds = totalSeconds % 60;
-        return String.format("%02d:%02d", minutes, seconds);
     }
 
     private String encode(String value) {

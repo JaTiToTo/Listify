@@ -55,7 +55,7 @@ public class SpotifyAuthService {
 	private Map <String, String> stateToCodeVerifierMap = new ConcurrentHashMap<>();
 
     public ResponseEntity<String> initiateSpotifyLogin() {
-        HttpSession session = UtilService.getCurrentSession();
+        logger.info("Initiating Spotify login without creating a session");
 
         if (clientId.isBlank() || clientSecret.isBlank()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -67,9 +67,6 @@ public class SpotifyAuthService {
         String codeVerifier = randomString(64);
         String codeChallenge = createCodeChallenge(codeVerifier);
 		stateToCodeVerifierMap.put(state, codeVerifier);
-
-        session.setAttribute("spotify_state", state);
-        session.setAttribute("spotify_code_verifier", codeVerifier);
 
         String authUrl = SPOTIFY_AUTH_URL
                 + "?response_type=code"
@@ -86,21 +83,20 @@ public class SpotifyAuthService {
     }
 
     public ResponseEntity<Void> handleSpotifyCallback(String code, String state, String error) {
-		logger.info("Handling Spotify callback with\ncode: {}\nstate: {}\nerror: {}", code, state, error);
         try {
             if (error != null || code == null || state == null) {
                 return redirectToFrontend("error=" + encode(error != null ? error : "invalid_request"));
             }
 
 			String codeVerifier = stateToCodeVerifierMap.get(state);
-            HttpSession session = UtilService.getCurrentSession();
+            HttpSession session = UtilService.getCurrentSession(true);
+            logger.info("Handling Spotify callback for session {}", session.getId());
 
             if (codeVerifier == null || codeVerifier.isBlank()) {
                 return redirectToFrontend("error=no matching codeVerifier for state: " + state);
             }
 
             JsonNode tokenResponse = exchangeAuthorizationCode(code, codeVerifier);
-			logger.info("Token response: {}", tokenResponse);
             if (tokenResponse == null || tokenResponse.has("error")) {
                 return redirectToFrontend("error=token_exchange_failed");
             }
@@ -112,6 +108,7 @@ public class SpotifyAuthService {
             session.setAttribute("spotify_access_token", accessToken);
             session.setAttribute("spotify_refresh_token", refreshToken);
             session.setAttribute("spotify_token_expires_in", expiresIn);
+            logger.info("Stored Spotify tokens in session {}: access_token={}, refresh_token={}, expires_in={}", session.getId(), accessToken, refreshToken, expiresIn);
 
 			stateToCodeVerifierMap.remove(state);
 
@@ -137,7 +134,6 @@ public class SpotifyAuthService {
                 .build();
 
         HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-		logger.info("Token exchange response: {}", response.body());
         if (response.statusCode() >= 400) {
             return null;
         }
