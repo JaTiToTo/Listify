@@ -20,7 +20,7 @@ tags:
     description: Playlist creation endpoints
 
 paths:
-  /auth/login/spotify:
+  /api/auth/login/spotify:
     get:
       summary: Initiate Spotify login
       operationId: initiateSpotifyLogin
@@ -52,7 +52,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /auth/callback:
+  /api/auth/callback:
     get:
       summary: Handle Spotify OAuth callback
       operationId: spotifyCallback

@@ -45,7 +45,7 @@ public class SpotifyAuthService {
     private String clientId;
     @Value("${SPOTIFY_CLIENT_SECRET:}")
     private String clientSecret;
-    @Value("${SPOTIFY_REDIRECT_URI:http://localhost:8081/auth/callback}")
+    @Value("${SPOTIFY_REDIRECT_URI:http://localhost:8081/api/auth/callback}")
     private String redirectUri;
     @Value("${SPOTIFY_FRONTEND_REDIRECT_URI:http://localhost:5173/callback}")
     private String frontendRedirectUri;

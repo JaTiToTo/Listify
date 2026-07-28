@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { apiGet } from "../lib/api";
+import { apiGetJson } from "../lib/api";
 
 import { sumDuration } from "../components/StatMeter";
 import { TrackItem } from "../components/TrackCard";
@@ -17,7 +17,7 @@ const DraftPage = () => {
   const [data, setData] = useState<MockResult | null>(null);
 
   useEffect(() => {
-    apiGet<MockResult>("/mock-result")
+    apiGetJson<MockResult>("/mock-result")
       .then(setData)
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
