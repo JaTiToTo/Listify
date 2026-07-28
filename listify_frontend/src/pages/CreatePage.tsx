@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { apiGet } from "../lib/api";
+
 const sessionIdMock = (Math.random() * 0xFFFFFFFFFFFFF).toString(16).slice(0, 10);
 
 type FilterKey =
@@ -47,6 +49,19 @@ type FilterDefinition = {
 const sliderCardClassName = "rounded-3xl border border-[#e0e0e0] bg-white p-6 shadow-sm";
 
 const cassetteStripColors = ["#D94B3D", "#F0B429", "#24B81F", "#3387B9"];
+
+const percentageToQueryValue = (value: number) => value / 100;
+
+type RecommendedSongsRequest = {
+  limit: number;
+  acousticness?: number;
+  danceability?: number;
+  energy?: number;
+  instrumentalness?: number;
+  loudness?: number;
+  tempo?: number;
+  valence?: number;
+};
 
 const defaultFilters: FilterState = {
   acousticness: 50,
@@ -184,6 +199,29 @@ const filterDefinitions: FilterDefinition[] = [
   },
 ];
 
+function buildRecommendedSongsQuery(filters: FilterState) {
+  const request: RecommendedSongsRequest = {
+    limit: filters.limit,
+    acousticness: percentageToQueryValue(filters.acousticness),
+    danceability: percentageToQueryValue(filters.danceability),
+    energy: percentageToQueryValue(filters.energy),
+    instrumentalness: percentageToQueryValue(filters.instrumentalness),
+    loudness: filters.loudness,
+    tempo: filters.tempo,
+    valence: percentageToQueryValue(filters.valence),
+  };
+
+  const searchParams = new URLSearchParams();
+
+  Object.entries(request).forEach(([key, value]) => {
+    if (value !== undefined) {
+      searchParams.set(key, String(value));
+    }
+  });
+
+  return searchParams.toString();
+}
+
 function SliderCard({
   title,
   description,
@@ -256,6 +294,7 @@ function SliderCard({
 
 export function CreatePage() {
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const navigate = useNavigate();
 
   const setFilterValue = (key: FilterKey) => (value: number) => {
@@ -263,6 +302,21 @@ export function CreatePage() {
       ...currentFilters,
       [key]: value,
     }));
+  };
+
+  const handleCreateDraftPlaylist = async () => {
+    const query = buildRecommendedSongsQuery(filters);
+
+    setIsLoadingRecommendations(true);
+
+    try {
+      await apiGet<unknown>(`/songs/recommendations?${query}`);
+    } catch (error) {
+      console.error("Failed to request recommended songs:", error);
+    } finally {
+      setIsLoadingRecommendations(false);
+      navigate(`/create/${sessionIdMock}/draft`);
+    }
   };
 
   return (
@@ -392,8 +446,9 @@ export function CreatePage() {
 
       <div className="flex justify-center">
         <button
-          className="group relative overflow-hidden rounded-[30px] border-[3px] border-[#1e1e1e] bg-[#efe8cf] px-14 py-6 font-quub text-xl font-bold text-[#1e1e1e] shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1"
-          onClick={() => navigate(`/create/${sessionIdMock}/draft`)}
+          className="group relative overflow-hidden rounded-[30px] border-[3px] border-[#1e1e1e] bg-[#efe8cf] px-14 py-6 font-quub text-xl font-bold text-[#1e1e1e] shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+          onClick={handleCreateDraftPlaylist}
+          disabled={isLoadingRecommendations}
         >
           <span className="absolute inset-x-0 top-0 flex h-3 overflow-hidden">
             {cassetteStripColors.map((color) => (
@@ -405,7 +460,7 @@ export function CreatePage() {
           </span>
           <span className="absolute right-4 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full border-2 border-[#1e1e1e] bg-white shadow-[0_3px_0_#1e1e1e]" />
           <span className="absolute inset-x-5 bottom-2 h-1 rounded-full bg-[#24B81F]/30" />
-          Create draft playlist
+          {isLoadingRecommendations ? "Preparing draft..." : "Create draft playlist"}
         </button>
       </div>
     </div>
