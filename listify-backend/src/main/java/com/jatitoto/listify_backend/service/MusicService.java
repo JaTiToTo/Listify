@@ -1,7 +1,6 @@
 package com.jatitoto.listify_backend.service;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.core.io.ByteArrayResource;
@@ -26,17 +25,10 @@ public class MusicService {
             Integer limit,
             Float acousticness,
             Float danceability,
-            Integer durationMs,
             Float energy,
             Float instrumentalness,
-            Integer key,
-            Float liveness,
             Float loudness,
-            Integer mode,
-            Integer popularity,
-            Float speechiness,
             Float tempo,
-            Integer timeSignature,
             Float valence) {
         HttpSession session = UtilService.getCurrentSession();
         logger.info("\nSession ID: {}", session.getId());
@@ -58,14 +50,5 @@ public class MusicService {
         SongSearchResponse response = new SongSearchResponse();
         response.setSongs(List.of(song1, song2));
         return ResponseEntity.ok(response);
-    }
-
-    public ResponseEntity<Resource> getTrackPreview(String trackId) {
-        byte[] previewBytes = ("dummy preview for " + trackId).getBytes(StandardCharsets.UTF_8);
-        ByteArrayResource resource = new ByteArrayResource(previewBytes);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("audio/mpeg"))
-                .body(resource);
     }
 }

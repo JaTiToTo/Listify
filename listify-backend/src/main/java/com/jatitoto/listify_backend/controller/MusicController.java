@@ -21,39 +21,19 @@ public class MusicController implements MusicApi {
             Integer limit,
             Float acousticness,
             Float danceability,
-            Integer durationMs,
             Float energy,
             Float instrumentalness,
-            Integer key,
-            Float liveness,
             Float loudness,
-            Integer mode,
-            Integer popularity,
-            Float speechiness,
             Float tempo,
-            Integer timeSignature,
             Float valence) {
         return musicService.getRecommendedSongs(
                 limit,
                 acousticness,
                 danceability,
-                durationMs,
                 energy,
                 instrumentalness,
-                key,
-                liveness,
                 loudness,
-                mode,
-                popularity,
-                speechiness,
                 tempo,
-                timeSignature,
                 valence);
-    }
-
-    @Override
-	@Deprecated
-    public ResponseEntity<Resource> getTrackPreview(String trackId) {
-        return musicService.getTrackPreview(trackId);
     }
 }
