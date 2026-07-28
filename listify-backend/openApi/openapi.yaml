@@ -95,13 +95,13 @@ paths:
     get:
       tags:
         - Music
-      summary: Get songs that match Spotify-style audio feature parameters
+      summary: Get songs that match the create-page audio filter parameters
       operationId: getRecommendedSongs
       description: >
-        Returns a list of songs that match the supplied Spotify audio feature
-        filters such as danceability, energy, instrumentalnes...
-        TODO: Check all the parameters and their ranges against the Spotify API documentation to ensure they are correct.
+        Returns a list of songs that match the playlist creation filters supplied
+        by the frontend create page.
       parameters:
+        # Popularity? Removed temporarily because it is not a Spotify audio feature and is not supported by the Spotify API for recommendations; unknown where from
         - name: limit
           in: query
           required: true
@@ -118,6 +118,7 @@ paths:
             format: float
             minimum: 0
             maximum: 1
+          description: Acoustic or electronic balance, where 0 is electronic and 1 is acoustic.
         - name: danceability
           in: query
           required: false
@@ -126,12 +127,7 @@ paths:
             format: float
             minimum: 0
             maximum: 1
-        - name: duration_ms
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
+          description: How suitable the track is for dancing, from 0 to 1.
         - name: energy
           in: query
           required: false
@@ -140,6 +136,7 @@ paths:
             format: float
             minimum: 0
             maximum: 1
+          description: Intensity and activity level of the track, from 0 to 1.
         - name: instrumentalness
           in: query
           required: false
@@ -148,62 +145,25 @@ paths:
             format: float
             minimum: 0
             maximum: 1
-        - name: key
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            maximum: 11
-        - name: liveness
-          in: query
-          required: false
-          schema:
-            type: number
-            format: float
-            minimum: 0
-            maximum: 1
+          description: Likelihood that the track contains no vocals, from 0 to 1.
         - name: loudness
           in: query
           required: false
           schema:
             type: number
             format: float
-        - name: mode
-          in: query
-          required: false
-          schema:
-            type: integer
-            enum: [0, 1]
-        - name: popularity
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            maximum: 100
-        - name: speechiness
-          in: query
-          required: false
-          schema:
-            type: number
-            format: float
-            minimum: 0
-            maximum: 1
+            minimum: -60
+            maximum: 0
+          description: Track loudness in decibels, usually between -60 and 0.
         - name: tempo
           in: query
           required: false
           schema:
             type: number
             format: float
-            minimum: 0
-        - name: time_signature
-          in: query
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 14
+            minimum: 60
+            maximum: 200
+          description: Tempo in beats per minute.
         - name: valence
           in: query
           required: false
@@ -212,6 +172,7 @@ paths:
             format: float
             minimum: 0
             maximum: 1
+          description: Musical positivity or mood, from 0 to 1.
       responses:
         '200':
           description: List of matching songs
