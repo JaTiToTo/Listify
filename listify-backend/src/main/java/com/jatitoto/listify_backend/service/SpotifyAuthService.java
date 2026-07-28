@@ -85,6 +85,16 @@ public class SpotifyAuthService {
                 .body(authUrl);
     }
 
+    public ResponseEntity<Void> logout() {
+        HttpSession session = UtilService.getCurrentSession();
+
+        session.removeAttribute("spotify_state");
+        session.removeAttribute("spotify_code_verifier");
+        session.invalidate();
+
+        return ResponseEntity.noContent().build();
+    }
+
     public ResponseEntity<Void> handleSpotifyCallback(String code, String state, String error) {
 		logger.info("Handling Spotify callback with\ncode: {}\nstate: {}\nerror: {}", code, state, error);
         try {
