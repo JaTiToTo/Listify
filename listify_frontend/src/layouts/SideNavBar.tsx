@@ -7,6 +7,7 @@ import iconMusic from "../assets/svgs/music.svg";
 import iconSmile from "../assets/svgs/smile.svg";
 import iconHome from "../assets/svgs/home.svg";
 import logout from "../assets/svgs/logout.svg";
+import { callApi } from "../lib/api";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
@@ -20,10 +21,7 @@ export function RootLayout() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await fetch("http://localhost:8081/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    await callApi("/auth/logout", "POST")
 
     navigate("/");
   }
