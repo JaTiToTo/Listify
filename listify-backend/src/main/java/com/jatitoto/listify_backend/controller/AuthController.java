@@ -24,4 +24,9 @@ public class AuthController implements AuthApi {
     public ResponseEntity<Void> spotifyCallback(String code, String state, String error) {
         return spotifyAuthService.handleSpotifyCallback(code, state, error);
     }
+
+    @Override
+    public ResponseEntity<Void> logout() {
+        return spotifyAuthService.logout();
+    }
 }
