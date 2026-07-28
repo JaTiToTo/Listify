@@ -25,17 +25,10 @@ public class MusicService {
             Integer limit,
             Float acousticness,
             Float danceability,
-            Integer durationMs,
             Float energy,
             Float instrumentalness,
-            Integer key,
-            Float liveness,
             Float loudness,
-            Integer mode,
-            Integer popularity,
-            Float speechiness,
             Float tempo,
-            Integer timeSignature,
             Float valence) {
         HttpSession session = UtilService.getCurrentSession();
         logger.info("\nSession ID: {}", session.getId());
