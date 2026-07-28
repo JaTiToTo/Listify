@@ -20,7 +20,7 @@ export function RootLayout() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await fetch("http://localhost:8081/auth/logout", {
+    await fetch("http://localhost:8081/api/auth/logout", {
       method: "POST",
       credentials: "include",
     });
