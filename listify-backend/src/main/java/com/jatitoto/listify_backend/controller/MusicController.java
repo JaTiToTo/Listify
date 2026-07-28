@@ -36,10 +36,4 @@ public class MusicController implements MusicApi {
                 tempo,
                 valence);
     }
-
-    @Override
-	@Deprecated
-    public ResponseEntity<Resource> getTrackPreview(String trackId) {
-        return musicService.getTrackPreview(trackId);
-    }
 }

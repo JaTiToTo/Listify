@@ -88,12 +88,12 @@ public class SpotifyAuthService {
     public ResponseEntity<Void> handleSpotifyCallback(String code, String state, String error) {
 		logger.info("Handling Spotify callback with\ncode: {}\nstate: {}\nerror: {}", code, state, error);
         try {
-			String codeVerifier = stateToCodeVerifierMap.get(state);
-            HttpSession session = UtilService.getCurrentSession();
-
             if (error != null || code == null || state == null) {
                 return redirectToFrontend("error=" + encode(error != null ? error : "invalid_request"));
             }
+
+			String codeVerifier = stateToCodeVerifierMap.get(state);
+            HttpSession session = UtilService.getCurrentSession();
 
             if (codeVerifier == null || codeVerifier.isBlank()) {
                 return redirectToFrontend("error=no matching codeVerifier for state: " + state);

@@ -63,13 +63,4 @@ public class MusicService {
     response.setSongs(songs != null ? songs : new ArrayList<>());
     return ResponseEntity.ok(response);
   }
-
-  public ResponseEntity<Resource> getTrackPreview(String trackId) {
-    byte[] previewBytes = ("dummy preview for " + trackId).getBytes(StandardCharsets.UTF_8);
-    ByteArrayResource resource = new ByteArrayResource(previewBytes);
-
-    return ResponseEntity.ok()
-        .contentType(MediaType.parseMediaType("audio/mpeg"))
-        .body(resource);
-  }
 }
