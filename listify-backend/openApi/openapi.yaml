@@ -232,43 +232,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/tracks/{trackId}/preview:
-    get:
-      tags:
-        - Music
-      summary: Get a preview sample for a song
-      operationId: getTrackPreview
-      description: >
-        Returns a short audio preview for a track using the same concept as the
-        Spotify Web API preview_url field.
-      parameters:
-        - name: trackId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Spotify-style track identifier.
-      responses:
-        '200':
-          description: Audio preview available
-          content:
-            audio/mpeg:
-              schema:
-                type: string
-                format: binary
-        '404':
-          description: Track not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Failed to retrieve preview
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
   /api/playlists:
     post:
       tags:

@@ -50,10 +50,4 @@ public class MusicController implements MusicApi {
                 timeSignature,
                 valence);
     }
-
-    @Override
-	@Deprecated
-    public ResponseEntity<Resource> getTrackPreview(String trackId) {
-        return musicService.getTrackPreview(trackId);
-    }
 }

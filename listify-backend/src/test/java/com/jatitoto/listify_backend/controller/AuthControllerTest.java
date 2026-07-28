@@ -53,6 +53,6 @@ class AuthControllerTest {
     void spotifyCallbackEndpointRedirectsToFrontendOnError() throws Exception {
         mockMvc.perform(get("/auth/callback").param("error", "access_denied"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("http://localhost:5173/callback?error=access_denied"));
+                .andExpect(redirectedUrl("http://127.0.0.1:5173/callback?error=access_denied"));
     }
 }
