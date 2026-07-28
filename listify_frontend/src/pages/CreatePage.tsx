@@ -46,7 +46,7 @@ type FilterDefinition = {
   accentColor: string;
 };
 
-const sliderCardClassName = "rounded-3xl border border-[#e0e0e0] bg-white p-6 shadow-sm";
+const sliderCardClassName = "rounded-3xl border border-[#e0e0e0] bg-lightgrey p-6 shadow-sm";
 
 const cassetteStripColors = ["#D94B3D", "#F0B429", "#24B81F", "#3387B9"];
 
@@ -247,7 +247,7 @@ function SliderCard({
         </div>
         <div
           className={`flex items-center justify-center rounded-full border border-[#1e1e1e] bg-[#f7f9ef] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e] whitespace-nowrap ${valueBadgeWidthClassName}`}
-          style={{ boxShadow: `0 0 0 1px ${accentColor}33 inset, 0 0 18px ${accentColor}22` }}
+          style={{ boxShadow: `0 0 0 56px ${accentColor}33 inset, 0 0 18px ${accentColor}22` }}
         >
           {valueLabel(value)}
         </div>
@@ -256,7 +256,7 @@ function SliderCard({
       <div className="mt-6">
         <div className="relative h-4 rounded-full border border-[#1e1e1e] bg-[#ececec] shadow-[inset_0_2px_0_rgba(255,255,255,0.75),inset_0_-2px_0_rgba(0,0,0,0.08)]">
           <div
-            className="absolute left-0 top-1/2 h-2 -translate-y-1/2 rounded-full"
+            className="absolute left-1 top-1/2 h-2 -translate-y-1/2 rounded-full"
             style={{
               width: `${progress}%`,
               backgroundImage: `linear-gradient(90deg, ${accentColor} 0%, ${accentColor}dd 100%)`,
@@ -267,8 +267,8 @@ function SliderCard({
             className="absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#1e1e1e]"
             style={{
               left: `${progress}%`,
-              backgroundImage: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96) 0 18%, ${accentColor} 19% 100%)`,
-              boxShadow: `0 0 0 3px rgba(247,249,239,0.95), 0 0 16px ${accentColor}66, 0 4px 0 #1e1e1e`,
+              backgroundImage: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96) 0 11%, ${accentColor} 19% 100%)`,
+              boxShadow: ` 0 0 16px ${accentColor}66, 0 1px 0 #1e1e1e`,
             }}
           />
           <input

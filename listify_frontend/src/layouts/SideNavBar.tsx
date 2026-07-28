@@ -18,7 +18,7 @@ export function RootLayout() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f7f9ef] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#d8dfc2] flex flex-col md:flex-row">
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[#e0e0e0] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
         <NavLink to="/main" className="flex items-center gap-3" onClick={() => setIsMobileNavOpen(false)}>
           <img src={imgLogo} alt="Listify" className="h-10 w-auto object-contain" />
@@ -68,7 +68,7 @@ export function RootLayout() {
       <aside
         id="mobile-navigation"
         className={[
-          'fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-white pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-white md:pt-6',
+          'fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-[#f7f9ef] pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-[##d8dfc2] md:pt-6',
           isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         ].join(' ')}
       >
@@ -110,7 +110,7 @@ export function RootLayout() {
       </aside>
 
       {/* Sidebar */}
-      <main className="min-w-0 flex-1 overflow-y-auto p-4 pb-8 sm:p-6 md:p-8">
+      <main className="min-w-0 flex-1 overflow-y-auto p-4 pb-8 sm:p-6 md:p-8 bg-[#e5dec5]">
         <div className="mx-auto max-w-7xl">
           <Outlet />
         </div>
