@@ -110,11 +110,9 @@ export function RootLayout() {
       <aside
         id="mobile-navigation"
         className={[
-          "relative z-10 fixed inset-y-0 lleft-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-white pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-white md:pt-6",
-          isMobileNavOpen
-            ? "translate-x-0"
-            : "-translate-x-full md:translate-x-0",
-        ].join(" ")}
+          'fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-[#f7f9ef] pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-[##d8dfc2] md:pt-6',
+          isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+        ].join(' ')}
       >
         <div className="md:block relative flex justify-between items-center">
           <img
