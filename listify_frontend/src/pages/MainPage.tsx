@@ -6,34 +6,36 @@ import playlistCoverImageThree from "../assets/img/playlist-cover-image-3.png";
 import playlistCoverImageFour from "../assets/img/playlist-cover-image-4.png";
 import cassetteImage from "../assets/img/cassette.png";
 
+import GradientWaveCircleLogo from "../components/design/GradientWaveCircleLogo";
+
 const presetCards = [
   {
     title: "Daily Drive",
     description: "1 hour of music and news",
     image: playlistCoverImageOne,
-    overlay: "bg-black/10",
+    overlay: "bg-[#24B81F]/40",
     label: "Daily Drive",
-  },
-  {
-    title: "Uptown Funk",
-    description: "Funky Grooves",
-    image: playlistCoverImageTwo,
-    overlay: "bg-[#ffee93]/30",
-    label: "Uptown Funk",
   },
   {
     title: "Sad vibes",
     description: "moody music to your liking!",
     image: playlistCoverImageThree,
-    overlay: "bg-[#ffc1c1]/30",
+    overlay: "bg-[#3387B9]/50",
     label: "Sad vibes",
   },
   {
     title: "Night Drive",
     description: "vibey music for driving",
     image: playlistCoverImageFour,
-    overlay: "bg-black/40",
+    overlay: "bg-[#D94B3D]/40",
     label: "Night drive",
+  },
+  {
+    title: "Uptown Funk",
+    description: "Funky Grooves",
+    image: playlistCoverImageTwo,
+    overlay: "bg-[#F0B429]/50",
+    label: "Uptown Funk",
   },
 ];
 
@@ -49,7 +51,6 @@ export function MainPage() {
             Presets
           </p>
         </div>
-
         <div className="gap-5 sm:gap-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 font-sans">
           {presetCards.map((card) => (
             <article
@@ -57,11 +58,13 @@ export function MainPage() {
               className="flex flex-col gap-2 mx-auto w-full max-w-[240px] sm:max-w-none"
             >
               <div className="relative shadow-soft rounded-[24px] sm:rounded-[28px] aspect-[5/4] sm:aspect-[4/5] overflow-hidden">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-[70%] object-cover"
-                />
+                <div className="z-10 relative object-cover">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-[70%] object-cover"
+                  />
+                </div>
                 <div className={`absolute inset-0 ${card.overlay}`} />
                 <h3 className="top-3 sm:top-4 left-3 sm:left-4 absolute max-w-[78%] font-bold text-white text-lg sm:text-3xl tracking-wide">
                   {card.label}

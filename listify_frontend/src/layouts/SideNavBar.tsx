@@ -9,6 +9,7 @@ import iconHome from "../assets/svgs/home.svg";
 import logout from "../assets/svgs/logout.svg";
 
 import GradientWaveCircleLogo from "../components/design/GradientWaveCircleLogo";
+import BackgroundPixelWash from "../components/design/BackgroundPixelWash";
 
 import { callApi } from "../lib/api";
 
@@ -30,8 +31,17 @@ export function RootLayout() {
   }
 
   return (
-    <div className="flex md:flex-row flex-col bg-[#f7f9ef] min-h-screen">
-      <header className="md:hidden top-0 z-20 sticky flex justify-between items-center bg-white/95 backdrop-blur px-4 py-3 border-[#e0e0e0] border-b">
+    <div className="relative flex md:flex-row flex-col bg-[#f7f9ef] min-h-screen">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <BackgroundPixelWash
+          className="absolute inset-0 w-[110%] h-full pointer-events-none"
+          cols={150}
+          rows={100}
+          opacity={0.35}
+        />
+      </div>
+
+      <header className="md:hidden top-0 z-20 sticky flex justify-between items-center bg-white/95 backdrop-blur px-4 py-3 border-[#e0e0e0] border-b hsticky">
         <NavLink
           to="/main"
           className="flex items-center gap-3"
@@ -100,7 +110,7 @@ export function RootLayout() {
       <aside
         id="mobile-navigation"
         className={[
-          "fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-white pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-white md:pt-6",
+          "relative z-10 fixed inset-y-0 lleft-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-white pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-white md:pt-6",
           isMobileNavOpen
             ? "translate-x-0"
             : "-translate-x-full md:translate-x-0",
@@ -175,8 +185,7 @@ export function RootLayout() {
         </div>
       </aside>
 
-      {/* Sidebar */}
-      <main className="flex-1 p-4 sm:p-6 md:p-8 pb-8 min-w-0 overflow-y-auto">
+      <main className="z-10 relative flex-1 p-4 sm:p-6 md:p-8 pb-8 min-w-0 overflow-y-auto">
         <div className="mx-auto max-w-7xl">
           <Outlet />
         </div>
