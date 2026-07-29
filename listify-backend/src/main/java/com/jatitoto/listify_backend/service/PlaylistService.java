@@ -16,7 +16,6 @@ import com.jatitoto.listify.model.PlaylistResponse;
 @RequiredArgsConstructor
 public class PlaylistService {
     private static final Logger logger = LoggerFactory.getLogger(PlaylistService.class);
-    private static final String DEFAULT_PLAYLIST_NAME = "Listify Playlist";
 
     private final SpotifyApiService spotifyApiService;
 
@@ -37,7 +36,7 @@ public class PlaylistService {
 
         String playlistId;
         try {
-            playlistId = spotifyApiService.createPlaylist(accessToken, DEFAULT_PLAYLIST_NAME);
+            playlistId = spotifyApiService.createPlaylist(accessToken, createPlaylistRequest.getPlaylistName());
             spotifyApiService.addTracksToPlaylist(accessToken, playlistId, createPlaylistRequest.getSongIds());
         } catch (RuntimeException ex) {
             logger.error("Failed to create Spotify playlist", ex);

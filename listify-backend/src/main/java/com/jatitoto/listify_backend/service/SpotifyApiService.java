@@ -38,6 +38,8 @@ public class SpotifyApiService {
     private static final String QUERY_PARAM_OFFSET = "offset";
     private static final String QUERY_PARAM_LIMIT = "limit";
     private static final String SEARCH_TYPE_TRACK = "track";
+    private static final String DEFAULT_PLAYLIST_NAME = "Listify Playlist";
+    private static final int MAX_PLAYLIST_NAME_LENGTH = 100;
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -113,9 +115,10 @@ public class SpotifyApiService {
 
     public String createPlaylist(String accessToken, String playlistName) throws JsonProcessingException {
         String requestUrl = SPOTIFY_API_BASE_URL + SPOTIFY_CREATE_PLAYLIST_PATH;
+        String sanitizedPlaylistName = resolvePlaylistName(playlistName);
 
         Map<String, Object> requestBody = new LinkedHashMap<>();
-        requestBody.put("name", playlistName);
+        requestBody.put("name", sanitizedPlaylistName);
         requestBody.put("public", false);
         requestBody.put("description", "");
 
@@ -152,6 +155,19 @@ public class SpotifyApiService {
         }
     }
 
+    String resolvePlaylistName(String playlistName) {
+        if (playlistName == null) {
+            return DEFAULT_PLAYLIST_NAME;
+        }
+
+        String trimmedName = playlistName.trim();
+        if (trimmedName.isBlank() || trimmedName.length() > MAX_PLAYLIST_NAME_LENGTH) {
+            return DEFAULT_PLAYLIST_NAME;
+        }
+
+        return trimmedName;
+    }
+
     public void addTracksToPlaylist(String accessToken, String playlistId, List<String> songIds) throws JsonProcessingException {
         if (songIds == null || songIds.isEmpty()) {
             return;
@@ -164,7 +180,7 @@ public class SpotifyApiService {
                 .map(songId -> songId.startsWith(SPOTIFY_TRACK_URI_PREFIX) ? songId : SPOTIFY_TRACK_URI_PREFIX + songId)
                 .collect(Collectors.toList());
 
-                logger.info("Track URIs to add to playlist {}: {}", playlistId, trackUris);
+        logger.info("Track URIs to add to playlist {}: {}", playlistId, trackUris);
         if (trackUris.isEmpty()) {
             return;
         }
@@ -191,7 +207,7 @@ public class SpotifyApiService {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Spotify add tracks request was interrupted", e);
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to parse Spotify add tracks response", e);
+            throw new IllegalStateException("Spotify add tracks request failed due to IO error", e);
         }
     }
 
