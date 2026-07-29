@@ -337,9 +337,17 @@ const DraftPage = () => {
       <div className="flex flex-col gap-2">
         <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
         <p className="font-quub text-lg font-semibold text-gray-600">{data.tracks.items.length} tracks selected</p>
-        <div className="inline-flex w-fit rounded-full border border-[#1e1e1e] bg-[#f7f9ef] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]">
-          Debug response: {recommendationDebug?.items?.length ?? 0} items from /songs/recommendations
-        </div>
+        <details className="group w-fit rounded-2xl border border-[#1e1e1e] bg-[#f7f9ef] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]">
+          <summary className="flex cursor-pointer list-none items-center gap-2">
+            <span>Debug response: {recommendationDebug?.items?.length ?? 0} items from /songs/recommendations</span>
+            <span className="rounded-full border border-[#1e1e1e] bg-white px-2 py-0.5 text-[10px] transition group-open:-rotate-180">v</span>
+          </summary>
+          {recommendationDebug?.selectedTags?.length ? (
+            <p className="mt-2 normal-case tracking-normal text-gray-600">
+              Tags: {recommendationDebug.selectedTags.join(", ")}
+            </p>
+          ) : null}
+        </details>
         <p className="max-w-4xl text-sm leading-6 text-gray-600">
           {recommendationDebug?.items?.length
             ? `First results: ${recommendationDebug.items.slice(0, 3).map((item) => `${item.name ?? item.id ?? "unnamed"}${item.external_ids?.isrc ? ` (${item.external_ids.isrc})` : ""}`).join(" · ")}`
