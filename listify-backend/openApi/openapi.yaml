@@ -259,45 +259,204 @@ components:
         - error
         - message
 
+    ExternalUrlsItem:
+      type: object
+      properties:
+        spotify:
+          type: string
+          format: uri
+          example: https://open.spotify.com/artist/3gBZUcNeVumkeeJ19CY2sX
+      required:
+        - spotify
+
+    ImageItem:
+      type: object
+      properties:
+        height:
+          type: integer
+          example: 640
+        width:
+          type: integer
+          example: 640
+        url:
+          type: string
+          format: uri
+          example: https://i.scdn.co/image/ab67616d0000b273e34f259b461e589917140e65
+      required:
+        - height
+        - width
+        - url
+
+    ArtistItem:
+      type: object
+      properties:
+        external_urls:
+          $ref: '#/components/schemas/ExternalUrlsItem'
+        href:
+          type: string
+          format: uri
+          example: https://api.spotify.com/v1/artists/3gBZUcNeVumkeeJ19CY2sX
+        id:
+          type: string
+          example: 3gBZUcNeVumkeeJ19CY2sX
+        name:
+          type: string
+          example: Ken Carson
+        type:
+          type: string
+          example: artist
+        uri:
+          type: string
+          example: spotify:artist:3gBZUcNeVumkeeJ19CY2sX
+      required:
+        - external_urls
+        - href
+        - id
+        - name
+        - type
+        - uri
+
+    ExternalIdsItem:
+      type: object
+      properties:
+        isrc:
+          type: string
+          example: TCAFB2005896
+      required:
+        - isrc
+
+    AlbumItem:
+      type: object
+      properties:
+        album_type:
+          type: string
+          example: single
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistItem'
+        external_urls:
+          $ref: '#/components/schemas/ExternalUrlsItem'
+        href:
+          type: string
+          format: uri
+          example: https://api.spotify.com/v1/albums/0NMHUXzCJRMrrwS5UDI8rM
+        id:
+          type: string
+          example: 0NMHUXzCJRMrrwS5UDI8rM
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageItem'
+        is_playable:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: Teen X
+        release_date:
+          type: string
+          example: '2020-08-14'
+        release_date_precision:
+          type: string
+          example: day
+        total_tracks:
+          type: integer
+          example: 6
+        type:
+          type: string
+          example: album
+        uri:
+          type: string
+          example: spotify:album:0NMHUXzCJRMrrwS5UDI8rM
+      required:
+        - album_type
+        - artists
+        - external_urls
+        - href
+        - id
+        - images
+        - is_playable
+        - name
+        - release_date
+        - release_date_precision
+        - total_tracks
+        - type
+        - uri
+
     SongItem:
       type: object
       properties:
-        title:
-          type: string
-          example: Midnight City
-        artist:
-          type: string
-          example: M83
-        length:
-          type: string
-          example: 03:43
-        songId:
-          type: string
-          example: 4aKdmOXdUKfITthWswfQ
-        songIcon:
+        album:
+          $ref: '#/components/schemas/AlbumItem'
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistItem'
+        disc_number:
+          type: integer
+          example: 1
+        duration_ms:
+          type: integer
+          example: 106533
+        explicit:
+          type: boolean
+          example: true
+        external_ids:
+          $ref: '#/components/schemas/ExternalIdsItem'
+        external_urls:
+          $ref: '#/components/schemas/ExternalUrlsItem'
+        href:
           type: string
           format: uri
-          example: https://i.scdn.co/image/ab67616d0000b2734a2f1c2f3d4e5f6a7b8c9d0e
-        previewUrl:
+          example: https://api.spotify.com/v1/tracks/66yPalPs9DrhbGb9gR3vD9
+        id:
           type: string
-          format: uri
-          example: https://audio-ssl.itunes.apple.com/apple-assets-us-ipv4/p123456789/vod/123456789.mp4
+          example: 66yPalPs9DrhbGb9gR3vD9
+        is_local:
+          type: boolean
+          example: false
+        is_playable:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: Yale
+        track_number:
+          type: integer
+          example: 2
+        type:
+          type: string
+          example: track
+        uri:
+          type: string
+          example: spotify:track:66yPalPs9DrhbGb9gR3vD9
       required:
-        - title
-        - artist
-        - length
-        - songId
-        - songIcon
+        - album
+        - artists
+        - disc_number
+        - duration_ms
+        - explicit
+        - external_ids
+        - external_urls
+        - href
+        - id
+        - is_local
+        - is_playable
+        - name
+        - track_number
+        - type
+        - uri
 
     SongSearchResponse:
       type: object
       properties:
-        songs:
+        items:
           type: array
           items:
             $ref: "#/components/schemas/SongItem"
       required:
-        - songs
+        - items
 
     CreatePlaylistRequest:
       type: object
