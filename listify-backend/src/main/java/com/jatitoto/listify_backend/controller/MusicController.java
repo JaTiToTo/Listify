@@ -1,6 +1,5 @@
 package com.jatitoto.listify_backend.controller;
 
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
