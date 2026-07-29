@@ -30,8 +30,6 @@ public class SpotifyApiService {
     private static final String SPOTIFY_API_BASE_URL = "https://api.spotify.com";
     private static final String SPOTIFY_RECOMMENDATIONS_PATH = "/v1/recommendations";
     private static final String SPOTIFY_SEARCH_PATH = "/v1/search";
-    private static final String SPOTIFY_CURRENT_USER_PATH = "/v1/me";
-    private static final String SPOTIFY_PLAYLISTS_PATH = "/playlists";
     private static final String SPOTIFY_CREATE_PLAYLIST_PATH = "/v1/me/playlists";
     private static final String SPOTIFY_TRACK_URI_PREFIX = "spotify:track:";
     private static final String SPOTIFY_RECOMMENDATIONS_URL = SPOTIFY_API_BASE_URL + SPOTIFY_RECOMMENDATIONS_PATH;

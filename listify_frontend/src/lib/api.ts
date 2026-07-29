@@ -1,4 +1,4 @@
-const apiBaseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL ?? 'http://blablabla:8081/api';
+const apiBaseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL ?? 'https://listify.uk:8081/api';
 
 export async function apiGetJson<T>(path: string): Promise<T> {
   const response = await callApi(path, "GET");
