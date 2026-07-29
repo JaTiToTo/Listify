@@ -10,6 +10,17 @@ type MockResult = {
   };
 };
 
+type RecommendationDebugResponse = {
+  items?: Array<{
+    id?: string;
+    name?: string;
+    external_ids?: { isrc?: string };
+  }>;
+  selectedTags?: string[];
+};
+
+const RECOMMENDATIONS_DEBUG_STORAGE_KEY = "listify:last-recommendations-response";
+
 type TrackItem = {
   id?: string;
   name: string;
@@ -262,8 +273,18 @@ function PlaylistTrackCard({ track, index }: { track: TrackItem; index: number }
 
 const DraftPage = () => {
   const [data, setData] = useState<MockResult | null>(null);
+  const [recommendationDebug, setRecommendationDebug] = useState<RecommendationDebugResponse | null>(null);
 
   useEffect(() => {
+    const storedResponse = sessionStorage.getItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY);
+    if (storedResponse) {
+      try {
+        setRecommendationDebug(JSON.parse(storedResponse) as RecommendationDebugResponse);
+      } catch (error) {
+        console.error("Failed to parse stored recommendations response:", error);
+      }
+    }
+
     apiGetJson<MockResult>("/mock-result")
       .then(setData)
       .catch((error) => console.error("Error fetching data:", error));
@@ -281,6 +302,14 @@ const DraftPage = () => {
       <div className="flex flex-col gap-2">
         <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
         <p className="font-quub text-lg font-semibold text-gray-600">{data.tracks.items.length} tracks selected</p>
+        <div className="inline-flex w-fit rounded-full border border-[#1e1e1e] bg-[#f7f9ef] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]">
+          Debug response: {recommendationDebug?.items?.length ?? 0} items from /songs/recommendations
+        </div>
+        <p className="max-w-4xl text-sm leading-6 text-gray-600">
+          {recommendationDebug?.items?.length
+            ? `First results: ${recommendationDebug.items.slice(0, 3).map((item) => `${item.name ?? item.id ?? "unnamed"}${item.external_ids?.isrc ? ` (${item.external_ids.isrc})` : ""}`).join(" · ")}`
+            : "No recommendation response stored yet. Open the Network tab, trigger Create draft playlist, and inspect the /songs/recommendations response."}
+        </p>
       </div>
 
       <div className="rounded-[32px] border border-[#e0e0e0] bg-[#f7f9ef] p-4 shadow-soft sm:p-6">
