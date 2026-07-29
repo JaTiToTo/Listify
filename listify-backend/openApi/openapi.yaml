@@ -8,9 +8,6 @@ info:
     and playlist creation.
   version: 1.0.0
 
-servers:
-  - url: http://localhost:8081
-
 tags:
   - name: Auth
     description: Spotify authentication endpoints
@@ -40,7 +37,7 @@ paths:
                 example: >
                   https://accounts.spotify.com/authorize?response_type=code
                   &client_id=abc123
-                  &redirect_uri=http://localhost:8080/auth/callback
+                  &redirect_uri=http://127.0.0.1:8080/auth/callback
                   &scope=playlist-modify-public%20playlist-modify-private
                   &code_challenge_method=S256
                   &code_challenge=xyz789
