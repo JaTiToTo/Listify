@@ -38,7 +38,7 @@ export default function BackgroundPixelWash({
     <svg
       className={className}
       viewBox={`0 0 ${cols} ${rows}`}
-      preserveAspectRatio="xMax yMin meet"
+      preserveAspectRatio="none"
       aria-hidden="true"
     >
       <g opacity={opacity}>
