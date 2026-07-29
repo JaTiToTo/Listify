@@ -348,7 +348,7 @@ const DraftPage = () => {
               <span key={color} className="h-full flex-1" style={{ backgroundColor: color }} />
             ))}
           </span>
-        </p>
+        </button>
 
         <button
           className="bg-[#3387B9] hover:bg-[#1e9a1a] px-6 py-3 border border-[#1e1e1e] rounded-2xl focus-visible:outline focus-visible:outline-[#24B81F] focus-visible:outline-2 focus-visible:outline-offset-2 font-vampire font-medium text-[#f7f9ef] text-sm uppercase tracking-[0.12em] transition-colors disabled:cursor-not-allowed disabled:opacity-70"
