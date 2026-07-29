@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-@RequiredArgsConstructor
 public class SpotifyAuthService {
     private static final Logger logger = LoggerFactory.getLogger(SpotifyAuthService.class);
     private static final String SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
