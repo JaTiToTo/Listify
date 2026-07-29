@@ -465,8 +465,12 @@ components:
           example:
             - 4aKdmOXdUKfITthWswfQ
             - 7xGfFoTpQ2qVdQ3K4mQ5c
+        playlistName:
+          type: string
+          example: My Playlist
       required:
         - songIds
+        - playlistName
 
     PlaylistResponse:
       type: object
