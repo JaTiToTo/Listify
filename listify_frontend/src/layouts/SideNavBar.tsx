@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import imgLogo from "../assets/svgs/topcorner_logo.svg";
 import iconList from "../assets/svgs/list.svg";
@@ -7,6 +7,10 @@ import iconMusic from "../assets/svgs/music.svg";
 import iconSmile from "../assets/svgs/smile.svg";
 import iconHome from "../assets/svgs/home.svg";
 import logout from "../assets/svgs/logout.svg";
+
+import GradientWaveCircleLogo from "../components/design/GradientWaveCircleLogo";
+import BackgroundPixelWash from "../components/design/BackgroundPixelWash";
+
 import { callApi } from "../lib/api";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -21,16 +25,30 @@ export function RootLayout() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await callApi("/auth/logout", "POST")
+    await callApi("/auth/logout", "POST");
 
     navigate("/");
   }
 
   return (
-    <div className="min-h-screen bg-[#d8dfc2] flex flex-col md:flex-row">
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[#e0e0e0] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
-        <NavLink to="/main" className="flex items-center gap-3" onClick={() => setIsMobileNavOpen(false)}>
-          <img src={imgLogo} alt="Listify" className="h-10 w-auto object-contain" />
+    <div className="relative flex md:flex-row flex-col bg-[#f7f9ef] min-h-screen">
+      <header className="md:hidden top-0 z-20 sticky flex justify-between items-center bg-white/95 backdrop-blur px-4 py-3 border-[#e0e0e0] border-b hsticky">
+        <NavLink
+          to="/main"
+          className="flex items-center gap-3"
+          onClick={() => setIsMobileNavOpen(false)}
+        >
+          <div className="md:block relative flex justify-between items-center">
+            <img
+              src={imgLogo}
+              alt="Listify"
+              className="w-full h-24 object-contain"
+            />
+            <GradientWaveCircleLogo
+              size={70}
+              className="top-[35%] left-[23%] absolute -translate-x-1/2 -translate-y-1/2"
+            />
+          </div>
         </NavLink>
 
         <button
@@ -83,15 +101,21 @@ export function RootLayout() {
       <aside
         id="mobile-navigation"
         className={[
-          'fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-[#f7f9ef] pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-[##d8dfc2] md:pt-6',
-          isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
-        ].join(' ')}
+          "fixed inset-y-0 left-0 z-30 w-[65vw] max-w-xs flex-col border-r border-[#e0e0e0] bg-[#f7f9ef] pt-6 shadow-2xl transition-transform duration-300 ease-out md:sticky md:top-0 md:z-10 md:flex md:h-screen md:w-64 md:translate-x-0 md:flex-shrink-0 md:border-r md:bg-[##d8dfc2] md:pt-6",
+          isMobileNavOpen
+            ? "translate-x-0"
+            : "-translate-x-full md:translate-x-0",
+        ].join(" ")}
       >
-        <div className="md:block flex justify-between items-center">
+        <div className="md:block relative flex justify-between items-center">
           <img
             src={imgLogo}
             alt="Listify"
             className="w-full h-24 object-contain"
+          />
+          <GradientWaveCircleLogo
+            size={70}
+            className="top-[35%] left-[24%] absolute -translate-x-1/2 -translate-y-1/2"
           />
         </div>
 
@@ -152,10 +176,18 @@ export function RootLayout() {
         </div>
       </aside>
 
-      {/* Sidebar */}
-      <main className="min-w-0 flex-1 overflow-y-auto p-4 pb-8 sm:p-6 md:p-8 bg-[#e5dec5]">
-        <div className="mx-auto max-w-7xl">
-          <Outlet />
+      <main className="relative flex-1 min-w-0 overflow-y-auto">
+        <div className="relative min-h-full">
+          <BackgroundPixelWash
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            cols={150}
+            rows={120}
+            opacity={0.35}
+          />
+
+          <div className="z-10 relative p-4 sm:p-6 md:p-8 pb-8">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>
