@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { apiGetJson } from "../lib/api";
+import { apiGetJson, apiPostJson } from "../lib/api";
 
 import { formatDuration, sumDuration } from "../components/StatMeter";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -9,6 +9,25 @@ type MockResult = {
   tracks: {
     items: TrackItem[];
   };
+};
+
+type CreatePlaylistRequest = {
+  songIds: string[];
+  playlistName: string;
+};
+
+type PlaylistResponse = {
+  playlistId: string;
+};
+
+const playlistRequestPayload: CreatePlaylistRequest = {
+  songIds: [
+    "spotify:track:2saoOMgzvDizi7CE8qxvyB",
+    "spotify:track:4yH9v7cWu7QXJffkusO5bW",
+    "spotify:track:0G21yYKMZoHa30cYVi1iA8",
+    "spotify:track:0ofHAoxe9vBkTCp2UQIavz",
+  ],
+  playlistName: "test_playlist",
 };
 
 type TrackItem = {
@@ -326,6 +345,7 @@ const DraftPage = () => {
   const { id: sessionId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState<MockResult | null>(null);
+  const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -336,6 +356,22 @@ const DraftPage = () => {
       .then(setData)
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
+  const handleSavePlaylist = async () => {
+    setIsCreatingPlaylist(true);
+
+    try {
+      const response = await apiPostJson<CreatePlaylistRequest, PlaylistResponse>(
+        "/playlists",
+        playlistRequestPayload,
+      );
+      console.log("Playlist created with id:", response.playlistId);
+    } catch (error) {
+      console.error("Failed to create playlist:", error);
+    } finally {
+      setIsCreatingPlaylist(false);
+    }
+  };
 
   if (!data) {
     {
@@ -404,7 +440,14 @@ const DraftPage = () => {
               />
             ))}
           </span>
-          Save playlist to library
+        </button>
+
+        <button
+          className="bg-[#3387B9] hover:bg-[#1e9a1a] px-6 py-3 border border-[#1e1e1e] rounded-2xl focus-visible:outline focus-visible:outline-[#24B81F] focus-visible:outline-2 focus-visible:outline-offset-2 font-vampire font-medium text-[#f7f9ef] text-sm uppercase tracking-[0.12em] transition-colors disabled:cursor-not-allowed disabled:opacity-70"
+          onClick={handleSavePlaylist}
+          disabled={isCreatingPlaylist}
+        >
+          {isCreatingPlaylist ? "Saving..." : "Save playlist to library"}
         </button>
       </div>
     </div>

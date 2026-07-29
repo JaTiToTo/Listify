@@ -72,7 +72,7 @@ const defaultFilters: FilterState = {
   loudness: -12,
   tempo: 124,
   valence: 50,
-  limit: 25,
+  limit: 1,
 };
 
 const filterDefinitions: FilterDefinition[] = [
