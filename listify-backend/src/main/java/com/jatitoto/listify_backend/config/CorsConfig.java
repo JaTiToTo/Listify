@@ -15,7 +15,9 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         var origins = parseArray(originString);
-        System.out.println("CORS ORIGIN ARRAY: " + origins);
+        for(String s : origins) {
+            System.out.println("CORS ORIGIN ARRAY: " + s);
+        }
         registry.addMapping("/**")
                 .allowedOrigins(origins)
                 .allowCredentials(true)
