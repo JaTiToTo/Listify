@@ -9,16 +9,17 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jatitoto.listify.model.SongItem;
@@ -29,6 +30,8 @@ public class SpotifyApiService {
     private static final String SPOTIFY_API_BASE_URL = "https://api.spotify.com";
     private static final String SPOTIFY_RECOMMENDATIONS_PATH = "/v1/recommendations";
     private static final String SPOTIFY_SEARCH_PATH = "/v1/search";
+    private static final String SPOTIFY_CREATE_PLAYLIST_PATH = "/v1/me/playlists";
+    private static final String SPOTIFY_TRACK_URI_PREFIX = "spotify:track:";
     private static final String SPOTIFY_RECOMMENDATIONS_URL = SPOTIFY_API_BASE_URL + SPOTIFY_RECOMMENDATIONS_PATH;
     private static final String QUERY_PARAM_Q = "q";
     private static final String QUERY_PARAM_TYPE = "type";
@@ -38,7 +41,7 @@ public class SpotifyApiService {
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Value("${SPOTIFY_RECOMMENDATION_SEED_GENRES:pop}")
+    @Value("pop")
     private String recommendationSeedGenres;
 
     public List<SongItem> getRecommendations(
@@ -54,7 +57,7 @@ public class SpotifyApiService {
         String requestUrl = buildRecommendationsUrl(limit, acousticness, danceability, energy, instrumentalness, loudness, tempo,
                 valence);
 
-logger.info("Fetching Spotify recommendations with access token: {}", accessToken);
+        logger.info("Fetching Spotify recommendations with access token: {}", accessToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(requestUrl))
                 .header("Authorization", "Bearer " + accessToken)
@@ -99,13 +102,96 @@ logger.info("Fetching Spotify recommendations with access token: {}", accessToke
             }
 
             JsonNode jsonResponse = OBJECT_MAPPER.readTree(response.body());
-            logger.info(jsonResponse.toPrettyString());
             return mapTracksToSongItems(jsonResponse.path("tracks").path("items"));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Spotify search request was interrupted", e);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse Spotify search response", e);
+        }
+    }
+
+    public String createPlaylist(String accessToken, String playlistName) throws JsonProcessingException {
+        String requestUrl = SPOTIFY_API_BASE_URL + SPOTIFY_CREATE_PLAYLIST_PATH;
+
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("name", playlistName);
+        requestBody.put("public", false);
+        requestBody.put("description", "");
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestUrl))
+                .header("Authorization", "Bearer " + accessToken)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(requestBody)))
+                .build();
+
+        try {
+            logger.info("Sending Spotify create playlist request to URL: {}", request.uri());
+            logger.info("Request body: {}", OBJECT_MAPPER.writeValueAsString(requestBody));
+            logger.info("Access token: {}", accessToken);
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 400) {
+                logger.warn("Spotify create playlist request failed with status {} and body {}", response.statusCode(),
+                        response.body());
+                throw new IllegalStateException("Spotify create playlist request failed with status " + response.statusCode());
+            }
+
+            JsonNode jsonResponse = OBJECT_MAPPER.readTree(response.body());
+            String playlistId = jsonResponse.path("id").asText("");
+            if (playlistId.isBlank()) {
+                throw new IllegalStateException("Spotify create playlist response did not contain a playlist id");
+            }
+            logger.info("Successfully created Spotify playlist with id: {}", playlistId);
+            return playlistId;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Spotify create playlist request was interrupted", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to parse Spotify create playlist response", e);
+        }
+    }
+
+    public void addTracksToPlaylist(String accessToken, String playlistId, List<String> songIds) throws JsonProcessingException {
+        if (songIds == null || songIds.isEmpty()) {
+            return;
+        }
+
+        logger.info("songIds to add to playlist {}: {}", playlistId, songIds);
+
+        List<String> trackUris = songIds.stream()
+                .filter(songId -> songId != null && !songId.isBlank())
+                .map(songId -> songId.startsWith(SPOTIFY_TRACK_URI_PREFIX) ? songId : SPOTIFY_TRACK_URI_PREFIX + songId)
+                .collect(Collectors.toList());
+
+                logger.info("Track URIs to add to playlist {}: {}", playlistId, trackUris);
+        if (trackUris.isEmpty()) {
+            return;
+        }
+
+        String requestUrl = SPOTIFY_API_BASE_URL + "/v1/playlists/" + encode(playlistId) + "/items";
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("uris", trackUris);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestUrl))
+                .header("Authorization", "Bearer " + accessToken)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(requestBody)))
+                .build();
+
+        try {
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 400) {
+                logger.warn("Spotify add tracks request failed with status {} and body {}", response.statusCode(),
+                        response.body());
+                throw new IllegalStateException("Spotify add tracks request failed with status " + response.statusCode());
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Spotify add tracks request was interrupted", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to parse Spotify add tracks response", e);
         }
     }
 
