@@ -18,6 +18,9 @@ public class CorsConfig implements WebMvcConfigurer {
         for(String s : origins) {
             System.out.println("CORS ORIGIN ARRAY: " + s);
         }
+        if(origins == null || origins.length == 0) {
+            throw new IllegalArgumentException("CORS_CONFIG_ORIGINS environment variable is not set or is empty.");
+        }
         registry.addMapping("/**")
                 .allowedOrigins(origins)
                 .allowCredentials(true)
