@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Listify Backend API
-  description: 
+  description:
     This is the backend API for Listify, a music discovery and playlist creation
     application that integrates with Spotify. It provides endpoints for user
     authentication, song recommendations based on audio features, track previews,
@@ -20,7 +20,7 @@ tags:
     description: Playlist creation endpoints
 
 paths:
-  /auth/login/spotify:
+  /api/auth/login/spotify:
     get:
       summary: Initiate Spotify login
       operationId: initiateSpotifyLogin
@@ -31,7 +31,7 @@ paths:
       tags:
         - Auth
       responses:
-        '200':
+        "200":
           description: Spotify authorization URL as plain text
           content:
             text/plain:
@@ -45,14 +45,24 @@ paths:
                   &code_challenge_method=S256
                   &code_challenge=xyz789
                   &state=randomStateString
-        '500':
+        "500":
           description: Failed to generate PKCE parameters or build Spotify URL
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
-  /auth/callback:
+  /api/auth/logout:
+    post:
+      summary: Log out the current user
+      operationId: logout
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: Successfully logged out
+
+  /api/auth/callback:
     get:
       summary: Handle Spotify OAuth callback
       operationId: spotifyCallback
@@ -82,14 +92,14 @@ paths:
             type: string
           description: Error returned by Spotify when authorization fails.
       responses:
-        '302':
+        "302":
           description: Redirects to the frontend callback URL after the OAuth flow completes.
-        '500':
+        "500":
           description: Failed to exchange the authorization code for an access token.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/songs/recommendations:
     get:
@@ -174,24 +184,24 @@ paths:
             maximum: 1
           description: Musical positivity or mood, from 0 to 1.
       responses:
-        '200':
+        "200":
           description: List of matching songs
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SongSearchResponse'
-        '400':
+                $ref: "#/components/schemas/SongSearchResponse"
+        "400":
           description: Invalid query parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Failed to retrieve recommendations
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/playlists:
     post:
@@ -204,50 +214,50 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePlaylistRequest'
+              $ref: "#/components/schemas/CreatePlaylistRequest"
       responses:
-        '201':
+        "201":
           description: Playlist created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlaylistResponse'
-        '400':
+                $ref: "#/components/schemas/PlaylistResponse"
+        "400":
           description: Invalid playlist payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Failed to create playlist
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
     ErrorResponse:
-        type: object
-        properties:
-          timestamp:
-            type: string
-            format: date-time
-            example: '2026-06-11T14:32:00Z'
-          status:
-            type: integer
-            example: 500
-          error:
-            type: string
-            example: Internal Server Error
-          message:
-            type: string
-            example: Failed to generate PKCE parameters
-        required:
-          - timestamp
-          - status
-          - error
-          - message
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-11T14:32:00Z"
+        status:
+          type: integer
+          example: 500
+        error:
+          type: string
+          example: Internal Server Error
+        message:
+          type: string
+          example: Failed to generate PKCE parameters
+      required:
+        - timestamp
+        - status
+        - error
+        - message
 
     ExternalUrlsItem:
       type: object
@@ -444,7 +454,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/SongItem'
+            $ref: "#/components/schemas/SongItem"
       required:
         - items
 

@@ -45,7 +45,7 @@ public class SpotifyAuthService {
     private String clientId;
     @Value("${SPOTIFY_CLIENT_SECRET:}")
     private String clientSecret;
-    @Value("${SPOTIFY_REDIRECT_URI:http://localhost:8081/auth/callback}")
+    @Value("${SPOTIFY_REDIRECT_URI:http://localhost:8081/api/auth/callback}")
     private String redirectUri;
     @Value("${SPOTIFY_FRONTEND_REDIRECT_URI:http://localhost:5173/callback}")
     private String frontendRedirectUri;
@@ -80,6 +80,16 @@ public class SpotifyAuthService {
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(authUrl);
+    }
+
+    public ResponseEntity<Void> logout() {
+        HttpSession session = UtilService.getCurrentSession();
+
+        session.removeAttribute("spotify_state");
+        session.removeAttribute("spotify_code_verifier");
+        session.invalidate();
+
+        return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<Void> handleSpotifyCallback(String code, String state, String error) {

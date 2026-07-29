@@ -1,17 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import spotifyIcon from "../../../assets/svgs/spotifyLogo.svg";
 import "./AuthCard.css";
+import { apiGetText } from "../../../lib/api";
 
 async function handleSpotifyLogin() {
-  const response = await fetch("http://localhost:8081/auth/login/spotify", {credentials: "include"});
+  const response = await apiGetText("/auth/login/spotify");
 
-  const text = await response.text();
-
-  if (!response.ok) {
-    throw new Error(text);
-  }
-
-  window.location.href = text;
+  window.location.href = response;
 }
 
 export default function AuthCard() {
