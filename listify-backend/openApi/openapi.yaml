@@ -106,7 +106,8 @@ paths:
       operationId: getRecommendedSongs
       description: >
         Returns a list of songs that match the playlist creation filters supplied
-        by the frontend create page.
+        by the frontend create page. The backend currently maps slider values to
+        Spotify genre/mood tags and queries Spotify search with those tags.
       parameters:
         # Popularity? Removed temporarily because it is not a Spotify audio feature and is not supported by the Spotify API for recommendations; unknown where from
         - name: limit
@@ -452,6 +453,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SongItem"
+        selectedTags:
+          type: array
+          items:
+            type: string
+          description: >
+            Genre/Mood-Tags, die der Slider-zu-Tag-Mapping-Algorithmus für diese
+            Anfrage ausgewählt hat. Dient der Nachvollziehbarkeit des Tag-basierten
+            Spotify-Search-Workarounds.
       required:
         - items
 

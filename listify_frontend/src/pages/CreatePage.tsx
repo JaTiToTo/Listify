@@ -64,6 +64,17 @@ type RecommendedSongsRequest = {
   valence?: number;
 };
 
+type RecommendedSongsResponse = {
+  items: Array<{
+    id?: string;
+    name?: string;
+    external_ids?: { isrc?: string };
+  }>;
+  selectedTags?: string[];
+};
+
+const RECOMMENDATIONS_DEBUG_STORAGE_KEY = "listify:last-recommendations-response";
+
 const defaultFilters: FilterState = {
   acousticness: 50,
   danceability: 55,
@@ -303,9 +314,9 @@ function SliderCard({
 
 export function CreatePage() {
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [requestError, setRequestError] = useState<string | null>(null);
   const [playlistName, setPlaylistName] = useState("Listify Playlist");
-  const [isLoadingRecommendations, setIsLoadingRecommendations] =
-    useState(false);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const navigate = useNavigate();
 
   const setFilterValue = (key: FilterKey) => (value: number) => {
@@ -319,11 +330,16 @@ export function CreatePage() {
     const query = buildRecommendedSongsQuery(filters);
 
     setIsLoadingRecommendations(true);
+    setRequestError(null);
 
     try {
-      await apiGetJson<unknown>(`/songs/recommendations?${query}`);
+      const response = await apiGetJson<RecommendedSongsResponse>(`/songs/recommendations?${query}`);
+      sessionStorage.setItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY, JSON.stringify(response));
+      navigate(`/create/${sessionId}/draft`);
     } catch (error) {
       console.error("Failed to request recommended songs:", error);
+      setRequestError(error instanceof Error ? error.message : "Failed to request recommended songs");
+      sessionStorage.removeItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY);
     } finally {
       setIsLoadingRecommendations(false);
       navigate(
@@ -335,12 +351,15 @@ export function CreatePage() {
   return (
     <div className="flex flex-col gap-8 mx-auto py-8 pb-32 max-w-6xl">
       <div className="flex flex-col gap-2">
-        <h2 className="font-vampire font-bold text-[#1e1e1e] text-4xl tracking-tight">
-          Create your own playlist
-        </h2>
-        <p className="font-quub font-semibold text-gray-600 text-lg">
-          Set the sound profile for the draft
-        </p>
+        <h2 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Create your own playlist</h2>
+        <p className="font-quub text-lg font-semibold text-gray-600">Set the sound profile for the draft</p>
+        {requestError ? (
+          <div className="rounded-2xl border border-[#d94b3d] bg-[#fff2f0] px-4 py-3 text-sm font-semibold text-[#a92f24]">
+            {requestError.includes("401")
+              ? "Spotify session missing. Log in first, then retry to see the real recommendation response."
+              : requestError}
+          </div>
+        ) : null}
       </div>
 
       <div className="bg-[#f7f9ef] shadow-soft p-4 sm:p-6 border border-[#e0e0e0] rounded-[32px]">

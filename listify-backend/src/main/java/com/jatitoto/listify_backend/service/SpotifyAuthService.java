@@ -9,6 +9,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,13 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -32,11 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-@RequiredArgsConstructor
 public class SpotifyAuthService {
     private static final Logger logger = LoggerFactory.getLogger(SpotifyAuthService.class);
     private static final String SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
     private static final String SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+    private static final long TOKEN_REFRESH_LEEWAY_SECONDS = 60;
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -53,6 +52,42 @@ public class SpotifyAuthService {
     private String scopes;
 
 	private Map <String, String> stateToCodeVerifierMap = new ConcurrentHashMap<>();
+
+    public void refreshSpotifyAccessTokenIfNeeded(HttpSession session) {
+        if (session == null) {
+            return;
+        }
+
+        String accessToken = (String) session.getAttribute("spotify_access_token");
+        String refreshToken = (String) session.getAttribute("spotify_refresh_token");
+        Long expiresAt = getTokenExpiresAt(session);
+
+        if (accessToken == null || accessToken.isBlank() || refreshToken == null || refreshToken.isBlank()) {
+            return;
+        }
+
+        if (!isTokenExpired(expiresAt)) {
+            return;
+        }
+
+        logger.info("Refreshing expired Spotify access token for session {}", session.getId());
+
+        try {
+            JsonNode tokenResponse = exchangeRefreshToken(refreshToken);
+            if (tokenResponse == null || tokenResponse.has("error")) {
+                logger.warn("Spotify token refresh failed for session {}", session.getId());
+                clearSpotifyTokenSessionAttributes(session);
+                return;
+            }
+
+            storeTokenResponse(session, tokenResponse, refreshToken);
+            logger.info("Refreshed Spotify access token for session {}", session.getId());
+        } catch (IOException | InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.warn("Spotify token refresh was interrupted or failed for session {}", session.getId(), e);
+            clearSpotifyTokenSessionAttributes(session);
+        }
+    }
 
     public ResponseEntity<String> initiateSpotifyLogin() {
         logger.info("Initiating Spotify login without creating a session");
@@ -87,6 +122,10 @@ public class SpotifyAuthService {
 
         session.removeAttribute("spotify_state");
         session.removeAttribute("spotify_code_verifier");
+        session.removeAttribute("spotify_access_token");
+        session.removeAttribute("spotify_refresh_token");
+        session.removeAttribute("spotify_token_expires_in");
+        session.removeAttribute("spotify_token_expires_at");
         session.invalidate();
 
         return ResponseEntity.noContent().build();
@@ -111,20 +150,16 @@ public class SpotifyAuthService {
                 return redirectToFrontend("error=token_exchange_failed");
             }
 
-            String accessToken = tokenResponse.path("access_token").asText("");
-            String refreshToken = tokenResponse.path("refresh_token").asText("");
-            String expiresIn = tokenResponse.path("expires_in").asText("");
-
-            session.setAttribute("spotify_access_token", accessToken);
-            session.setAttribute("spotify_refresh_token", refreshToken);
-            session.setAttribute("spotify_token_expires_in", expiresIn);
-            logger.info("Stored Spotify tokens in session {}: access_token={}, refresh_token={}, expires_in={}", session.getId(), accessToken, refreshToken, expiresIn);
+            storeTokenResponse(session, tokenResponse, null);
+            logger.info("Stored Spotify tokens in session {}", session.getId());
 
 			stateToCodeVerifierMap.remove(state);
 
             return redirectToFrontend("authorized=true");
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            return redirectToFrontend("error=token_exchange_failed");
+        } catch (IOException e) {
             return redirectToFrontend("error=token_exchange_failed");
         }
     }
@@ -149,6 +184,70 @@ public class SpotifyAuthService {
         }
 
         return OBJECT_MAPPER.readTree(response.body());
+    }
+
+    private JsonNode exchangeRefreshToken(String refreshToken) throws IOException, InterruptedException {
+        String body = "grant_type=refresh_token"
+                + "&refresh_token=" + encode(refreshToken)
+                + "&client_id=" + encode(clientId);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(SPOTIFY_TOKEN_URL))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes(StandardCharsets.UTF_8)))
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+
+        HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() >= 400) {
+            return null;
+        }
+
+        return OBJECT_MAPPER.readTree(response.body());
+    }
+
+    private void storeTokenResponse(HttpSession session, JsonNode tokenResponse, String fallbackRefreshToken) {
+        String accessToken = tokenResponse.path("access_token").asText("");
+        String refreshToken = tokenResponse.path("refresh_token").asText(fallbackRefreshToken != null ? fallbackRefreshToken : "");
+        long expiresInSeconds = tokenResponse.path("expires_in").asLong(3600L);
+        long expiresAt = Instant.now().plusSeconds(expiresInSeconds).toEpochMilli();
+
+        session.setAttribute("spotify_access_token", accessToken);
+        session.setAttribute("spotify_refresh_token", refreshToken);
+        session.setAttribute("spotify_token_expires_in", String.valueOf(expiresInSeconds));
+        session.setAttribute("spotify_token_expires_at", expiresAt);
+    }
+
+    private void clearSpotifyTokenSessionAttributes(HttpSession session) {
+        session.removeAttribute("spotify_access_token");
+        session.removeAttribute("spotify_refresh_token");
+        session.removeAttribute("spotify_token_expires_in");
+        session.removeAttribute("spotify_token_expires_at");
+    }
+
+    private Long getTokenExpiresAt(HttpSession session) {
+        Object expiresAtAttribute = session.getAttribute("spotify_token_expires_at");
+        if (expiresAtAttribute instanceof Long expiresAt) {
+            return expiresAt;
+        }
+
+        if (expiresAtAttribute instanceof String expiresAtString && !expiresAtString.isBlank()) {
+            try {
+                return Long.parseLong(expiresAtString);
+            } catch (NumberFormatException ignored) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isTokenExpired(Long expiresAt) {
+        if (expiresAt == null) {
+            return true;
+        }
+
+        return Instant.now().toEpochMilli() >= (expiresAt - (TOKEN_REFRESH_LEEWAY_SECONDS * 1000L));
     }
 
     private ResponseEntity<Void> redirectToFrontend(String queryString) {

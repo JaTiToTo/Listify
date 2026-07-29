@@ -11,6 +11,16 @@ type MockResult = {
   };
 };
 
+type RecommendationDebugResponse = {
+  items?: Array<{
+    id?: string;
+    name?: string;
+    external_ids?: { isrc?: string };
+  }>;
+  selectedTags?: string[];
+};
+
+const RECOMMENDATIONS_DEBUG_STORAGE_KEY = "listify:last-recommendations-response";
 type CreatePlaylistRequest = {
   songIds: string[];
   playlistName: string;
@@ -335,6 +345,7 @@ const DraftPage = () => {
   const { id: sessionId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState<MockResult | null>(null);
+  const [recommendationDebug, setRecommendationDebug] = useState<RecommendationDebugResponse | null>(null);
   const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const location = useLocation();
@@ -343,6 +354,15 @@ const DraftPage = () => {
   let playlistUrlId: string = "";
 
   useEffect(() => {
+    const storedResponse = sessionStorage.getItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY);
+    if (storedResponse) {
+      try {
+        setRecommendationDebug(JSON.parse(storedResponse) as RecommendationDebugResponse);
+      } catch (error) {
+        console.error("Failed to parse stored recommendations response:", error);
+      }
+    }
+
     apiGetJson<MockResult>("/mock-result")
       .then(setData)
       .catch((error) => console.error("Error fetching data:", error));
@@ -392,11 +412,23 @@ const DraftPage = () => {
   return (
     <div className="flex flex-col gap-8 mx-auto py-8 pb-32 max-w-6xl">
       <div className="flex flex-col gap-2">
-        <h1 className="font-vampire font-bold text-[#1e1e1e] text-4xl tracking-tight">
-          Draft playlist
-        </h1>
-        <p className="font-quub font-semibold text-gray-600 text-lg">
-          {data.tracks.items.length} tracks selected
+        <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
+        <p className="font-quub text-lg font-semibold text-gray-600">{data.tracks.items.length} tracks selected</p>
+        <details className="group w-fit rounded-2xl border border-[#1e1e1e] bg-[#f7f9ef] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]">
+          <summary className="flex cursor-pointer list-none items-center gap-2">
+            <span>Debug response: {recommendationDebug?.items?.length ?? 0} items from /songs/recommendations</span>
+            <span className="rounded-full border border-[#1e1e1e] bg-white px-2 py-0.5 text-[10px] transition group-open:-rotate-180">v</span>
+          </summary>
+          {recommendationDebug?.selectedTags?.length ? (
+            <p className="mt-2 normal-case tracking-normal text-gray-600">
+              Tags: {recommendationDebug.selectedTags.join(", ")}
+            </p>
+          ) : null}
+        </details>
+        <p className="max-w-4xl text-sm leading-6 text-gray-600">
+          {recommendationDebug?.items?.length
+            ? `First results: ${recommendationDebug.items.slice(0, 3).map((item) => `${item.name ?? item.id ?? "unnamed"}${item.external_ids?.isrc ? ` (${item.external_ids.isrc})` : ""}`).join(" · ")}`
+            : "No recommendation response stored yet. Open the Network tab, trigger Create draft playlist, and inspect the /songs/recommendations response."}
         </p>
       </div>
 
