@@ -17,7 +17,7 @@ npm run dev
 3. Change every functionality component (text input etc.) to actual functional components
 4. Check repsonsivness
 5. Give playlist creation etc. a better mock design (currently just plain objeczs)
-6. Point API calls at your Maven backend using `VITE_API_BASE_URL`.
+6. Point API calls at your Maven backend using `BACKEND_API_BASE_URL`.
 
 ---
 

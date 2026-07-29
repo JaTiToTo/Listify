@@ -1,15 +1,12 @@
 openapi: 3.0.3
 info:
   title: Listify Backend API
-  description: 
+  description:
     This is the backend API for Listify, a music discovery and playlist creation
     application that integrates with Spotify. It provides endpoints for user
     authentication, song recommendations based on audio features, track previews,
     and playlist creation.
   version: 1.0.0
-
-servers:
-  - url: http://localhost:8081
 
 tags:
   - name: Auth
@@ -20,7 +17,7 @@ tags:
     description: Playlist creation endpoints
 
 paths:
-  /auth/login/spotify:
+  /api/auth/login/spotify:
     get:
       summary: Initiate Spotify login
       operationId: initiateSpotifyLogin
@@ -31,7 +28,7 @@ paths:
       tags:
         - Auth
       responses:
-        '200':
+        "200":
           description: Spotify authorization URL as plain text
           content:
             text/plain:
@@ -40,19 +37,29 @@ paths:
                 example: >
                   https://accounts.spotify.com/authorize?response_type=code
                   &client_id=abc123
-                  &redirect_uri=http://localhost:8080/auth/callback
+                  &redirect_uri=http://127.0.0.1:8080/auth/callback
                   &scope=playlist-modify-public%20playlist-modify-private
                   &code_challenge_method=S256
                   &code_challenge=xyz789
                   &state=randomStateString
-        '500':
+        "500":
           description: Failed to generate PKCE parameters or build Spotify URL
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
-  /auth/callback:
+  /api/auth/logout:
+    post:
+      summary: Log out the current user
+      operationId: logout
+      tags:
+        - Auth
+      responses:
+        "200":
+          description: Successfully logged out
+
+  /api/auth/callback:
     get:
       summary: Handle Spotify OAuth callback
       operationId: spotifyCallback
@@ -82,14 +89,14 @@ paths:
             type: string
           description: Error returned by Spotify when authorization fails.
       responses:
-        '302':
+        "302":
           description: Redirects to the frontend callback URL after the OAuth flow completes.
-        '500':
+        "500":
           description: Failed to exchange the authorization code for an access token.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/songs/recommendations:
     get:
@@ -174,24 +181,24 @@ paths:
             maximum: 1
           description: Musical positivity or mood, from 0 to 1.
       responses:
-        '200':
+        "200":
           description: List of matching songs
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SongSearchResponse'
-        '400':
+                $ref: "#/components/schemas/SongSearchResponse"
+        "400":
           description: Invalid query parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Failed to retrieve recommendations
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/playlists:
     post:
@@ -204,90 +211,249 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePlaylistRequest'
+              $ref: "#/components/schemas/CreatePlaylistRequest"
       responses:
-        '201':
+        "201":
           description: Playlist created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlaylistResponse'
-        '400':
+                $ref: "#/components/schemas/PlaylistResponse"
+        "400":
           description: Invalid playlist payload
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Failed to create playlist
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
     ErrorResponse:
-        type: object
-        properties:
-          timestamp:
-            type: string
-            format: date-time
-            example: '2026-06-11T14:32:00Z'
-          status:
-            type: integer
-            example: 500
-          error:
-            type: string
-            example: Internal Server Error
-          message:
-            type: string
-            example: Failed to generate PKCE parameters
-        required:
-          - timestamp
-          - status
-          - error
-          - message
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-06-11T14:32:00Z"
+        status:
+          type: integer
+          example: 500
+        error:
+          type: string
+          example: Internal Server Error
+        message:
+          type: string
+          example: Failed to generate PKCE parameters
+      required:
+        - timestamp
+        - status
+        - error
+        - message
+
+    ExternalUrlsItem:
+      type: object
+      properties:
+        spotify:
+          type: string
+          format: uri
+          example: https://open.spotify.com/artist/3gBZUcNeVumkeeJ19CY2sX
+      required:
+        - spotify
+
+    ImageItem:
+      type: object
+      properties:
+        height:
+          type: integer
+          example: 640
+        width:
+          type: integer
+          example: 640
+        url:
+          type: string
+          format: uri
+          example: https://i.scdn.co/image/ab67616d0000b273e34f259b461e589917140e65
+      required:
+        - height
+        - width
+        - url
+
+    ArtistItem:
+      type: object
+      properties:
+        external_urls:
+          $ref: '#/components/schemas/ExternalUrlsItem'
+        href:
+          type: string
+          format: uri
+          example: https://api.spotify.com/v1/artists/3gBZUcNeVumkeeJ19CY2sX
+        id:
+          type: string
+          example: 3gBZUcNeVumkeeJ19CY2sX
+        name:
+          type: string
+          example: Ken Carson
+        type:
+          type: string
+          example: artist
+        uri:
+          type: string
+          example: spotify:artist:3gBZUcNeVumkeeJ19CY2sX
+      required:
+        - external_urls
+        - href
+        - id
+        - name
+        - type
+        - uri
+
+    ExternalIdsItem:
+      type: object
+      properties:
+        isrc:
+          type: string
+          example: TCAFB2005896
+      required:
+        - isrc
+
+    AlbumItem:
+      type: object
+      properties:
+        album_type:
+          type: string
+          example: single
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistItem'
+        external_urls:
+          $ref: '#/components/schemas/ExternalUrlsItem'
+        href:
+          type: string
+          format: uri
+          example: https://api.spotify.com/v1/albums/0NMHUXzCJRMrrwS5UDI8rM
+        id:
+          type: string
+          example: 0NMHUXzCJRMrrwS5UDI8rM
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageItem'
+        is_playable:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: Teen X
+        release_date:
+          type: string
+          example: '2020-08-14'
+        release_date_precision:
+          type: string
+          example: day
+        total_tracks:
+          type: integer
+          example: 6
+        type:
+          type: string
+          example: album
+        uri:
+          type: string
+          example: spotify:album:0NMHUXzCJRMrrwS5UDI8rM
+      required:
+        - album_type
+        - artists
+        - external_urls
+        - href
+        - id
+        - images
+        - is_playable
+        - name
+        - release_date
+        - release_date_precision
+        - total_tracks
+        - type
+        - uri
 
     SongItem:
       type: object
       properties:
-        title:
-          type: string
-          example: Midnight City
-        artist:
-          type: string
-          example: M83
-        length:
-          type: string
-          example: 03:43
-        songId:
-          type: string
-          example: 4aKdmOXdUKfITthWswfQ
-        songIcon:
+        album:
+          $ref: '#/components/schemas/AlbumItem'
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistItem'
+        disc_number:
+          type: integer
+          example: 1
+        duration_ms:
+          type: integer
+          example: 106533
+        explicit:
+          type: boolean
+          example: true
+        external_ids:
+          $ref: '#/components/schemas/ExternalIdsItem'
+        external_urls:
+          $ref: '#/components/schemas/ExternalUrlsItem'
+        href:
           type: string
           format: uri
-          example: https://i.scdn.co/image/ab67616d0000b2734a2f1c2f3d4e5f6a7b8c9d0e
-        previewUrl:
+          example: https://api.spotify.com/v1/tracks/66yPalPs9DrhbGb9gR3vD9
+        id:
           type: string
-          format: uri
-          example: https://audio-ssl.itunes.apple.com/apple-assets-us-ipv4/p123456789/vod/123456789.mp4
+          example: 66yPalPs9DrhbGb9gR3vD9
+        is_local:
+          type: boolean
+          example: false
+        is_playable:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: Yale
+        track_number:
+          type: integer
+          example: 2
+        type:
+          type: string
+          example: track
+        uri:
+          type: string
+          example: spotify:track:66yPalPs9DrhbGb9gR3vD9
       required:
-        - title
-        - artist
-        - length
-        - songId
-        - songIcon
+        - album
+        - artists
+        - disc_number
+        - duration_ms
+        - explicit
+        - external_ids
+        - external_urls
+        - href
+        - id
+        - is_local
+        - is_playable
+        - name
+        - track_number
+        - type
+        - uri
 
     SongSearchResponse:
       type: object
       properties:
-        songs:
+        items:
           type: array
           items:
-            $ref: '#/components/schemas/SongItem'
+            $ref: "#/components/schemas/SongItem"
       required:
-        - songs
+        - items
 
     CreatePlaylistRequest:
       type: object

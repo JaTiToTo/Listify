@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { apiGet } from "../lib/api";
+import { apiGetJson } from "../lib/api";
 
 const sessionIdMock = (Math.random() * 0xFFFFFFFFFFFFF).toString(16).slice(0, 10);
 
@@ -310,7 +310,7 @@ export function CreatePage() {
     setIsLoadingRecommendations(true);
 
     try {
-      await apiGet<unknown>(`/songs/recommendations?${query}`);
+      await apiGetJson<unknown>(`/songs/recommendations?${query}`);
     } catch (error) {
       console.error("Failed to request recommended songs:", error);
     } finally {

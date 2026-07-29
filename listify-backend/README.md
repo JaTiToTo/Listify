@@ -35,7 +35,7 @@ mvn spring-boot:run
 .\mvnw spring-boot:run
 ```
 
-The application starts on `http://localhost:8081` (Port is configured in [application.properties](src/main/resources/application.properties)).
+The application starts on `http://127.0.0.1:8081` (Port is configured in [application.properties](src/main/resources/application.properties)).
 
 To stop it press `Ctrl + C` and confirm with `y` if needed.
 
@@ -46,7 +46,7 @@ To stop it press `Ctrl + C` and confirm with `y` if needed.
 Once the application is running, open the interactive API docs in your browser:
 
 ```
-http://localhost:8081/swagger-ui.html
+http://127.0.0.1:8081/swagger-ui.html
 ```
 
 From here you can browse all available endpoints and send test requests directly.

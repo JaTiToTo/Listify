@@ -8,12 +8,16 @@ import jakarta.servlet.http.HttpSession;
 
 public class UtilService {
     static HttpSession getCurrentSession() {
+        return getCurrentSession(true);
+    }
+
+    static HttpSession getCurrentSession(boolean createIfMissing) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             throw new IllegalStateException("No request context available");
         }
 
         HttpServletRequest request = attributes.getRequest();
-        return request.getSession(true);
-    }	
+        return createIfMissing ? request.getSession(true) : request.getSession(false);
+    }
 }

@@ -1,21 +1,30 @@
-import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { useState } from "react";
+import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 
-import imgLogo from '../assets/svgs/topcorner_logo.svg';
-import iconList from '../assets/svgs/list.svg';
-import iconMusic from '../assets/svgs/music.svg';
-import iconSmile from '../assets/svgs/smile.svg';
-import iconHome from '../assets/svgs/home.svg';
+import imgLogo from "../assets/svgs/topcorner_logo.svg";
+import iconList from "../assets/svgs/list.svg";
+import iconMusic from "../assets/svgs/music.svg";
+import iconSmile from "../assets/svgs/smile.svg";
+import iconHome from "../assets/svgs/home.svg";
+import logout from "../assets/svgs/logout.svg";
+import { callApi } from "../lib/api";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
-    'flex items-center gap-4 px-4 py-2.5 rounded-lg text-base font-medium transition',
-    'whitespace-nowrap',
-    isActive ? 'bg-gray-100 text-black' : 'text-black hover:bg-gray-50',
-  ].join(' ');
+    "flex items-center gap-4 px-4 py-2.5 rounded-lg text-base font-medium transition",
+    "whitespace-nowrap",
+    isActive ? "bg-gray-100 text-black" : "text-black hover:bg-gray-50",
+  ].join(" ");
 
 export function RootLayout() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await callApi("/auth/logout", "POST")
+
+    navigate("/");
+  }
 
   return (
     <div className="min-h-screen bg-[#d8dfc2] flex flex-col md:flex-row">
@@ -26,31 +35,37 @@ export function RootLayout() {
 
         <button
           type="button"
-          aria-label={isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-label={
+            isMobileNavOpen ? "Close navigation menu" : "Open navigation menu"
+          }
           aria-expanded={isMobileNavOpen}
           aria-controls="mobile-navigation"
           onClick={() => setIsMobileNavOpen((value) => !value)}
-          className="group inline-flex h-11 items-center gap-3 rounded-full border border-[#e0e0e0] bg-white px-4 text-[#1e1e1e] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#c8c8c8] hover:bg-[#fafafa] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1e1e1e]/20 focus-visible:ring-offset-2"
+          className="group inline-flex items-center gap-3 bg-white hover:bg-[#fafafa] shadow-sm hover:shadow-md px-4 border border-[#e0e0e0] hover:border-[#c8c8c8] rounded-full focus-visible:outline-none focus-visible:ring-[#1e1e1e]/20 focus-visible:ring-2 focus-visible:ring-offset-2 h-11 text-[#1e1e1e] transition-all hover:-translate-y-0.5 duration-200"
         >
-          <span className="text-sm font-semibold tracking-wide">Menu</span>
-          <span className="relative flex h-4 w-5 items-center justify-center">
+          <span className="font-semibold text-sm tracking-wide">Menu</span>
+          <span className="relative flex justify-center items-center w-5 h-4">
             <span
               className={[
-                'absolute h-0.5 w-5 rounded-full bg-current transition-transform duration-200',
-                isMobileNavOpen ? 'translate-y-0 rotate-45' : '-translate-y-1.5',
-              ].join(' ')}
+                "absolute h-0.5 w-5 rounded-full bg-current transition-transform duration-200",
+                isMobileNavOpen
+                  ? "translate-y-0 rotate-45"
+                  : "-translate-y-1.5",
+              ].join(" ")}
             />
             <span
               className={[
-                'absolute h-0.5 w-5 rounded-full bg-current transition-all duration-200',
-                isMobileNavOpen ? 'scale-x-0 opacity-0' : 'opacity-100',
-              ].join(' ')}
+                "absolute h-0.5 w-5 rounded-full bg-current transition-all duration-200",
+                isMobileNavOpen ? "scale-x-0 opacity-0" : "opacity-100",
+              ].join(" ")}
             />
             <span
               className={[
-                'absolute h-0.5 w-5 rounded-full bg-current transition-transform duration-200',
-                isMobileNavOpen ? 'translate-y-0 -rotate-45' : 'translate-y-1.5',
-              ].join(' ')}
+                "absolute h-0.5 w-5 rounded-full bg-current transition-transform duration-200",
+                isMobileNavOpen
+                  ? "translate-y-0 -rotate-45"
+                  : "translate-y-1.5",
+              ].join(" ")}
             />
           </span>
         </button>
@@ -61,7 +76,7 @@ export function RootLayout() {
           type="button"
           aria-label="Close navigation overlay"
           onClick={() => setIsMobileNavOpen(false)}
-          className="fixed inset-0 z-20 cursor-default bg-black/35 md:hidden"
+          className="md:hidden z-20 fixed inset-0 bg-black/35 cursor-default"
         />
       ) : null}
 
@@ -72,16 +87,27 @@ export function RootLayout() {
           isMobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         ].join(' ')}
       >
-        <div className="flex items-center justify-between md:block">
-          <img src={imgLogo} alt="Listify" className="h-24 w-full object-contain" />
+        <div className="md:block flex justify-between items-center">
+          <img
+            src={imgLogo}
+            alt="Listify"
+            className="w-full h-24 object-contain"
+          />
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-6 flex flex-col gap-6">
+        <div className="flex flex-col flex-1 gap-6 px-4 pb-6 overflow-y-auto">
           {/* Discover Section */}
           <div>
-            <div className="px-2 py-2 mt-2 text-sm font-semibold text-black mb-1">Discover</div>
+            <div className="mt-2 mb-1 px-2 py-2 font-semibold text-black text-sm">
+              Discover
+            </div>
             <nav className="flex flex-col gap-1">
-              <NavLink to="/main" className={navLinkClass} end onClick={() => setIsMobileNavOpen(false)}>
+              <NavLink
+                to="/main"
+                className={navLinkClass}
+                end
+                onClick={() => setIsMobileNavOpen(false)}
+              >
                 <img src={iconHome} alt="" className="w-6 h-6" />
                 <span>Home</span>
               </NavLink>
@@ -90,22 +116,39 @@ export function RootLayout() {
 
           {/* Library Section */}
           <div>
-            <div className="px-2 py-2 mt-2 text-sm font-semibold text-black mb-1">Library</div>
+            <div className="mt-2 mb-1 px-2 py-2 font-semibold text-black text-sm">
+              Library
+            </div>
             <nav className="flex flex-col gap-1">
-              <div className="flex items-center gap-4 px-4 py-2.5 rounded-lg text-base font-medium text-black hover:bg-gray-50 cursor-not-allowed opacity-50">
+              <div className="flex items-center gap-4 hover:bg-gray-50 opacity-50 px-4 py-2.5 rounded-lg font-medium text-black text-base cursor-not-allowed">
                 <img src={iconList} alt="" className="w-6 h-6" />
                 <span>History</span>
               </div>
-              <div className="flex items-center gap-4 px-4 py-2.5 rounded-lg text-base font-medium text-black hover:bg-gray-50 cursor-not-allowed opacity-50">
+              <div className="flex items-center gap-4 hover:bg-gray-50 opacity-50 px-4 py-2.5 rounded-lg font-medium text-black text-base cursor-not-allowed">
                 <img src={iconMusic} alt="" className="w-6 h-6" />
                 <span>Songs</span>
               </div>
-              <NavLink to="/create" className={navLinkClass} onClick={() => setIsMobileNavOpen(false)}>
+              <NavLink
+                to="/create"
+                className={navLinkClass}
+                onClick={() => setIsMobileNavOpen(false)}
+              >
                 <img src={iconSmile} alt="" className="w-6 h-6" />
                 <span>Create playlist</span>
               </NavLink>
             </nav>
           </div>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            className="flex items-center gap-4 hover:bg-gray-50 mb-2 px-8 py-2.5 w-full font-medium text-black mt"
+            onClick={handleLogout}
+          >
+            <img src={logout} alt="" className="w-6 h-6" />
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
 
