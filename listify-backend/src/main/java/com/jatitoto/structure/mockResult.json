@@ -552,7 +552,7 @@
                     "id": "mockalbum6",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage6",
+                            "url": "https://picsum.photos/640/640?random=11",
                             "height": 640,
                             "width": 640
                         }
@@ -567,7 +567,7 @@
                             "external_urls": {
                                 "spotify": "https://open.spotify.com/artist/mockartist9"
                             },
-                            "href": "https://api.spotify.com/v1/artists/mockartist9",
+                            "href": "https://api.spotify.com/v1/artists/mockartist4",
                             "id": "mockartist9",
                             "name": "Bruno Mars",
                             "type": "artist",
@@ -798,7 +798,7 @@
                     "id": "mockalbum9",
                     "images": [
                         {
-                            "url": "https://i.scdn.co/image/mockimage9",
+                            "url": "https://picsum.photos/640/640?random=10",
                             "height": 640,
                             "width": 640
                         }
