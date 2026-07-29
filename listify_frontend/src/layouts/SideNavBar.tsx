@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 import imgLogo from "../assets/svgs/topcorner_logo.svg";
 import iconList from "../assets/svgs/list.svg";
@@ -7,6 +7,9 @@ import iconMusic from "../assets/svgs/music.svg";
 import iconSmile from "../assets/svgs/smile.svg";
 import iconHome from "../assets/svgs/home.svg";
 import logout from "../assets/svgs/logout.svg";
+
+import GradientWaveCircleLogo from "../components/design/GradientWaveCircleLogo";
+
 import { callApi } from "../lib/api";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -21,7 +24,7 @@ export function RootLayout() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    await callApi("/auth/logout", "POST")
+    await callApi("/auth/logout", "POST");
 
     navigate("/");
   }
@@ -34,11 +37,17 @@ export function RootLayout() {
           className="flex items-center gap-3"
           onClick={() => setIsMobileNavOpen(false)}
         >
-          <img
-            src={imgLogo}
-            alt="Listify"
-            className="w-auto h-10 object-contain"
-          />
+          <div className="md:block relative flex justify-between items-center">
+            <img
+              src={imgLogo}
+              alt="Listify"
+              className="w-full h-24 object-contain"
+            />
+            <GradientWaveCircleLogo
+              size={70}
+              className="top-[35%] left-[23%] absolute -translate-x-1/2 -translate-y-1/2"
+            />
+          </div>
         </NavLink>
 
         <button
@@ -97,11 +106,15 @@ export function RootLayout() {
             : "-translate-x-full md:translate-x-0",
         ].join(" ")}
       >
-        <div className="md:block flex justify-between items-center">
+        <div className="md:block relative flex justify-between items-center">
           <img
             src={imgLogo}
             alt="Listify"
             className="w-full h-24 object-contain"
+          />
+          <GradientWaveCircleLogo
+            size={70}
+            className="top-[35%] left-[24%] absolute -translate-x-1/2 -translate-y-1/2"
           />
         </div>
 
