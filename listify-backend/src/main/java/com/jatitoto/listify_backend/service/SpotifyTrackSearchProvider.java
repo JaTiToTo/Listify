@@ -3,7 +3,6 @@ package com.jatitoto.listify_backend.service;
 import com.jatitoto.listify.model.SongItem;
 import com.jatitoto.listify_backend.mapper.SliderTagMapper;
 import java.util.List;
-import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

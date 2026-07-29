@@ -1,7 +1,8 @@
 package com.jatitoto.listify_backend.mapper;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -39,6 +40,15 @@ public final class SliderTagMapper {
     public record TagWeight(String tag, double weight) {
     }
 
+    /**
+     * A thematic group of genres/moods with an "anchor" position in the 5D slider
+     * space (energy, valence, acousticness, instrumentalness, tempo). Used by
+     * {@link #selectSearchTags(Map, Random)} to pick 2-3 coherent tags per request
+     * instead of aggregating independent per-axis picks.
+     */
+    public record GenreCluster(String name, List<String> genres, List<String> moods, double[] anchor) {
+    }
+
     private static final Map<SliderAxis, List<TagBucket>> AXIS_BUCKETS = Map.of(
         SliderAxis.ENERGY, List.of(
             new TagBucket(15, List.of("ambient", "chillout", "downtempo", "lo-fi", "new age", "acoustic"), List.of("calm", "relaxing", "peaceful", "chill", "soft")),
@@ -67,19 +77,47 @@ public final class SliderTagMapper {
         )
     );
 
+    /**
+     * Thematic genre clusters used for coherent multi-tag selection. Anchors use
+     * the same scales as {@link #AXIS_BUCKETS} (0-100 for energy/valence/acousticness/
+     * instrumentalness, BPM for tempo) so both systems stay comparable.
+     */
+    private static final List<GenreCluster> GENRE_CLUSTERS = List.of(
+        new GenreCluster("Lo-fi Chill", List.of("lo-fi", "chillout", "downtempo", "ambient"), List.of("calm", "relaxing"), new double[]{10, 45, 70, 55, 75}),
+        new GenreCluster("Acoustic Singer-Songwriter", List.of("acoustic", "singer-songwriter", "folk", "americana"), List.of("reflective", "mellow"), new double[]{25, 40, 90, 10, 95}),
+        new GenreCluster("Indie Dream Pop", List.of("indie pop", "dream pop", "bedroom pop", "folk pop"), List.of("nostalgic", "bittersweet"), new double[]{45, 55, 55, 15, 115}),
+        new GenreCluster("Feelgood Pop", List.of("pop", "tropical house", "disco", "funk"), List.of("happy", "feelgood", "summer"), new double[]{60, 85, 35, 10, 122}),
+        new GenreCluster("Melancholic Blues", List.of("sad songs", "emo", "blues", "slowcore"), List.of("sad", "melancholic", "heartbreak"), new double[]{20, 15, 60, 15, 78}),
+        new GenreCluster("Alt / Indie Rock", List.of("alternative rock", "indie rock", "post-punk"), List.of("moody", "energetic"), new double[]{55, 40, 35, 20, 128}),
+        new GenreCluster("EDM Dance Energy", List.of("edm", "house", "big room", "dance"), List.of("hype", "energetic", "workout"), new double[]{90, 70, 10, 60, 126}),
+        new GenreCluster("Afrobeats Tropical Groove", List.of("afrobeats", "tropical house", "funk", "disco"), List.of("sunny", "fun"), new double[]{65, 80, 30, 30, 112}),
+        new GenreCluster("Hip-Hop & R&B", List.of("hip-hop", "r&b", "rap", "trap"), List.of("smooth", "laid-back"), new double[]{50, 45, 15, 5, 90}),
+        new GenreCluster("Instrumental Cinematic", List.of("instrumental", "classical", "soundtrack", "post-rock"), List.of("reflective", "calm"), new double[]{30, 45, 70, 95, 85}),
+        new GenreCluster("High-Energy Electronic/Punk", List.of("drum and bass", "techno", "hardstyle", "punk", "hyperpop"), List.of("intense", "power"), new double[]{95, 55, 5, 50, 172}),
+        new GenreCluster("Jazz Bossa Lounge", List.of("jazz instrumental", "bossa nova", "soul", "funk"), List.of("smooth", "chill"), new double[]{35, 60, 75, 60, 96})
+    );
+
+    /** Per-axis normalization ranges used to make cluster-distance axes comparable (last entry is the 60-200 BPM tempo span). */
+    private static final double[] AXIS_RANGE = {100d, 100d, 100d, 100d, 140d};
+
     private static final Set<String> ALL_GENRE_TAGS = buildGenreTagIndex();
 
     private static Set<String> buildGenreTagIndex() {
-    Set<String> genreTags = new LinkedHashSet<>();
-    for (List<TagBucket> buckets : AXIS_BUCKETS.values()) {
-        for (TagBucket bucket : buckets) {
-            for (String genre : bucket.genres()) {
+        Set<String> genreTags = new LinkedHashSet<>();
+        for (List<TagBucket> buckets : AXIS_BUCKETS.values()) {
+            for (TagBucket bucket : buckets) {
+                for (String genre : bucket.genres()) {
+                    genreTags.add(genre.toLowerCase(Locale.ROOT));
+                }
+            }
+        }
+        for (GenreCluster cluster : GENRE_CLUSTERS) {
+            for (String genre : cluster.genres()) {
                 genreTags.add(genre.toLowerCase(Locale.ROOT));
             }
         }
+        return genreTags;
     }
-    return genreTags;
-}
 
     public static boolean isGenreTag(String tag) {
         return tag != null && ALL_GENRE_TAGS.contains(tag.trim().toLowerCase(Locale.ROOT));
@@ -173,18 +211,34 @@ public final class SliderTagMapper {
         return selectWeightedUniqueTags(weightedTags, 2, random);
     }
 
+    /**
+     * Picks the slider values' position in 5D space (energy, valence, acousticness,
+     * instrumentalness, tempo), finds the genre cluster(s) whose theme fits best -
+     * allowing the single worst-fitting axis to be ignored - and returns 2-3 tags
+     * from that theme (optionally blended with a neighboring cluster) so the result
+     * has a coherent, dynamic theme instead of 5-7 unrelated tags.
+     */
     public static List<String> selectSearchTags(Map<SliderAxis, Float> axisValues, Random random) {
-        Map<String, Double> aggregatedWeights = new LinkedHashMap<>();
+        double[] userVector = toVector(axisValues);
 
-        for (SliderAxis axis : SliderAxis.values()) {
-            List<String> axisTags = selectAxisTags(axis, axisValues.get(axis), random);
-            for (String tag : axisTags) {
-                aggregatedWeights.merge(tag, 1d, Double::sum);
-            }
+        List<GenreCluster> ranked = new ArrayList<>(GENRE_CLUSTERS);
+        ranked.sort(Comparator.comparingDouble(cluster -> clusterScore(cluster, userVector)));
+        List<GenreCluster> shortlist = ranked.subList(0, Math.min(3, ranked.size()));
+
+        GenreCluster primary = drawWeightedCluster(shortlist, userVector, random);
+        List<GenreCluster> neighbors = new ArrayList<>(shortlist);
+        neighbors.remove(primary);
+        GenreCluster neighbor = neighbors.isEmpty() ? null : neighbors.get(0);
+
+        List<String> selectedTags = new ArrayList<>(selectWeightedUniqueTags(toEqualTagWeights(primary.genres()), 2, random));
+
+        if (neighbor != null && random.nextDouble() < 0.35) {
+            selectedTags.addAll(selectWeightedUniqueTags(toEqualTagWeights(neighbor.genres()), 1, random));
+        } else if (!primary.moods().isEmpty()) {
+            selectedTags.addAll(selectWeightedUniqueTags(toEqualTagWeights(primary.moods()), 1, random));
         }
 
-        int desiredTagCount = Math.min(aggregatedWeights.size(), 5 + random.nextInt(3));
-        return selectWeightedUniqueTags(toTagWeights(aggregatedWeights.entrySet()), desiredTagCount, random);
+        return List.copyOf(new LinkedHashSet<>(selectedTags));
     }
 
     public static List<String> selectWeightedUniqueTags(List<TagWeight> weightedTags, int desiredCount, Random random) {
@@ -205,10 +259,44 @@ public final class SliderTagMapper {
         return selectedTags;
     }
 
-    private static List<TagWeight> toTagWeights(Collection<Map.Entry<String, Double>> entries) {
+    private static double[] toVector(Map<SliderAxis, Float> axisValues) {
+        return new double[]{
+            normalizeSliderValue(SliderAxis.ENERGY, axisValues.get(SliderAxis.ENERGY)),
+            normalizeSliderValue(SliderAxis.VALENCE, axisValues.get(SliderAxis.VALENCE)),
+            normalizeSliderValue(SliderAxis.ACOUSTICNESS, axisValues.get(SliderAxis.ACOUSTICNESS)),
+            normalizeSliderValue(SliderAxis.INSTRUMENTALNESS, axisValues.get(SliderAxis.INSTRUMENTALNESS)),
+            normalizeSliderValue(SliderAxis.TEMPO, axisValues.get(SliderAxis.TEMPO))
+        };
+    }
+
+    /** Lower is better. Drops the single worst-fitting axis so a cluster isn't punished for one mismatched slider. */
+    private static double clusterScore(GenreCluster cluster, double[] userVector) {
+        double[] diffs = new double[userVector.length];
+        for (int i = 0; i < userVector.length; i++) {
+            diffs[i] = Math.abs(cluster.anchor()[i] - userVector[i]) / AXIS_RANGE[i];
+        }
+        Arrays.sort(diffs);
+        double sum = 0d;
+        int countedAxes = diffs.length - 1;
+        for (int i = 0; i < countedAxes; i++) {
+            sum += diffs[i];
+        }
+        return sum / countedAxes;
+    }
+
+    private static GenreCluster drawWeightedCluster(List<GenreCluster> clusters, double[] userVector, Random random) {
         List<TagWeight> weights = new ArrayList<>();
-        for (Map.Entry<String, Double> entry : entries) {
-            weights.add(new TagWeight(entry.getKey(), entry.getValue()));
+        for (GenreCluster cluster : clusters) {
+            weights.add(new TagWeight(cluster.name(), 1d / (0.05d + clusterScore(cluster, userVector))));
+        }
+        TagWeight drawn = drawWeightedTag(weights, random);
+        return clusters.stream().filter(cluster -> cluster.name().equals(drawn.tag())).findFirst().orElse(clusters.get(0));
+    }
+
+    private static List<TagWeight> toEqualTagWeights(List<String> tags) {
+        List<TagWeight> weights = new ArrayList<>();
+        for (String tag : tags) {
+            weights.add(new TagWeight(tag, 1d));
         }
         return weights;
     }

@@ -314,11 +314,9 @@ function SliderCard({
 
 export function CreatePage() {
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
-  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const [requestError, setRequestError] = useState<string | null>(null);
   const [playlistName, setPlaylistName] = useState("Listify Playlist");
-  const [isLoadingRecommendations, setIsLoadingRecommendations] =
-    useState(false);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const navigate = useNavigate();
 
   const setFilterValue = (key: FilterKey) => (value: number) => {
@@ -337,7 +335,7 @@ export function CreatePage() {
     try {
       const response = await apiGetJson<RecommendedSongsResponse>(`/songs/recommendations?${query}`);
       sessionStorage.setItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY, JSON.stringify(response));
-      navigate(`/create/${sessionIdMock}/draft`);
+      navigate(`/create/${sessionId}/draft`);
     } catch (error) {
       console.error("Failed to request recommended songs:", error);
       setRequestError(error instanceof Error ? error.message : "Failed to request recommended songs");
@@ -362,12 +360,6 @@ export function CreatePage() {
               : requestError}
           </div>
         ) : null}
-        <h2 className="font-vampire font-bold text-[#1e1e1e] text-4xl tracking-tight">
-          Create your own playlist
-        </h2>
-        <p className="font-quub font-semibold text-gray-600 text-lg">
-          Set the sound profile for the draft
-        </p>
       </div>
 
       <div className="bg-[#f7f9ef] shadow-soft p-4 sm:p-6 border border-[#e0e0e0] rounded-[32px]">

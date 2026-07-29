@@ -1,9 +1,11 @@
 package com.jatitoto.listify_backend.service;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 import com.jatitoto.listify.model.AlbumItem;
 import com.jatitoto.listify.model.ArtistItem;
@@ -23,18 +25,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+
 @SpringBootTest
 class TagBasedRecommendationServiceTest {
+
 
     @Autowired
     private TagBasedRecommendationService recommendationService;
 
+
     @MockBean
     private TrackSearchProvider trackSearchProvider;
+
 
     @Test
     void interpolatesBucketsAtEdgesAndCenters() {
@@ -45,11 +52,13 @@ class TagBasedRecommendationServiceTest {
         assertWeightsSumToOne(SliderTagMapper.interpolateBuckets(SliderAxis.TEMPO, 130d));
         assertWeightsSumToOne(SliderTagMapper.interpolateBuckets(SliderAxis.TEMPO, 180d));
 
+
         List<BucketWeight> valleyWeights = SliderTagMapper.interpolateBuckets(SliderAxis.ENERGY, 50d);
         assertEquals(1, valleyWeights.size());
         assertEquals(50d, valleyWeights.get(0).bucket().center());
         assertEquals(1d, valleyWeights.get(0).weight(), 1e-9);
     }
+
 
     @Test
     void selectsDifferentSearchTagsForDifferentRandomDraws() {
@@ -61,17 +70,58 @@ class TagBasedRecommendationServiceTest {
             SliderAxis.TEMPO, 124f
         );
 
+
         List<String> firstSelection = SliderTagMapper.selectSearchTags(axisValues, new Random(1));
         List<String> secondSelection = SliderTagMapper.selectSearchTags(axisValues, new Random(2));
 
+
         assertFalse(firstSelection.isEmpty());
         assertFalse(secondSelection.isEmpty());
-        assertTrue(firstSelection.size() >= 5 && firstSelection.size() <= 7);
-        assertTrue(secondSelection.size() >= 5 && secondSelection.size() <= 7);
+        assertTrue(firstSelection.size() >= 2 && firstSelection.size() <= 3);
+        assertTrue(secondSelection.size() >= 2 && secondSelection.size() <= 3);
         assertEquals(firstSelection.size(), firstSelection.stream().distinct().count());
         assertEquals(secondSelection.size(), secondSelection.stream().distinct().count());
         assertFalse(firstSelection.equals(secondSelection));
     }
+
+
+    @Test
+    void selectedTagsIncludeAtLeastTwoGenreTagsFromAThematicCluster() {
+        var axisValues = java.util.Map.of(
+            SliderAxis.ENERGY, 0.90f,
+            SliderAxis.VALENCE, 0.70f,
+            SliderAxis.ACOUSTICNESS, 0.10f,
+            SliderAxis.INSTRUMENTALNESS, 0.55f,
+            SliderAxis.TEMPO, 126f
+        );
+
+
+        List<String> selection = SliderTagMapper.selectSearchTags(axisValues, new Random(7));
+
+
+        long genreTagCount = selection.stream().filter(SliderTagMapper::isGenreTag).count();
+        assertTrue(genreTagCount >= 2, "expected at least 2 genre tags from the primary cluster, got: " + selection);
+    }
+
+
+    @Test
+    void sameSeedAndAxisValuesProduceDeterministicSelection() {
+        var axisValues = java.util.Map.of(
+            SliderAxis.ENERGY, 0.30f,
+            SliderAxis.VALENCE, 0.20f,
+            SliderAxis.ACOUSTICNESS, 0.75f,
+            SliderAxis.INSTRUMENTALNESS, 0.15f,
+            SliderAxis.TEMPO, 90f
+        );
+
+
+        List<String> first = SliderTagMapper.selectSearchTags(axisValues, new Random(42));
+        List<String> second = SliderTagMapper.selectSearchTags(axisValues, new Random(42));
+
+
+        assertEquals(first, second);
+    }
+
 
     @Test
     void deduplicatesByIsrcBeforeIdAndKeepsUniqueTitles() {
@@ -80,17 +130,21 @@ class TagBasedRecommendationServiceTest {
         SongItem duplicateByIdFallback = song("one", "Different Title", null);
         SongItem unique = song("three", "Unique Title", "ISRC-2");
 
+
         List<SongItem> deduplicated = recommendationService.deduplicateSongs(List.of(first, duplicateByIsrc, duplicateByIdFallback, unique));
+
 
         assertEquals(2, deduplicated.size());
         assertEquals("Shared Title", deduplicated.get(0).getName());
         assertEquals("Unique Title", deduplicated.get(1).getName());
     }
 
+
     @Test
     void returnsMockEndToEndResponseWithinRequestedLimit() {
         when(trackSearchProvider.searchTracksByTag(anyString(), anyString(), anyInt(), anyInt()))
             .thenAnswer(invocation -> songsForTag(invocation.getArgument(1, String.class), invocation.getArgument(3, Integer.class)));
+
 
         SongSearchResponse response = recommendationService.buildRecommendations(
             "access-token",
@@ -103,10 +157,12 @@ class TagBasedRecommendationServiceTest {
             124f,
             0.60f);
 
+
         assertNotNull(response);
         assertNotNull(response.getItems());
         assertFalse(response.getItems().isEmpty());
         assertTrue(response.getItems().size() <= 6);
+
 
         SongItem first = response.getItems().get(0);
         assertNotNull(first.getAlbum());
@@ -120,11 +176,13 @@ class TagBasedRecommendationServiceTest {
         assertNotNull(first.getExternalIds().getIsrc());
     }
 
+
     private static void assertWeightsSumToOne(List<BucketWeight> weights) {
         assertFalse(weights.isEmpty());
         double sum = weights.stream().mapToDouble(BucketWeight::weight).sum();
         assertEquals(1d, sum, 1e-9);
     }
+
 
     private static SongItem song(String id, String name, String isrc) {
         SongItem song = new SongItem();
@@ -146,6 +204,7 @@ class TagBasedRecommendationServiceTest {
         return song;
     }
 
+
     private static List<SongItem> songsForTag(String tag, int offset) {
         List<SongItem> songs = new ArrayList<>();
         for (int index = 0; index < 10; index++) {
@@ -156,6 +215,7 @@ class TagBasedRecommendationServiceTest {
         }
         return songs;
     }
+
 
     private static AlbumItem album(String id) {
         AlbumItem album = new AlbumItem();
@@ -175,6 +235,7 @@ class TagBasedRecommendationServiceTest {
         return album;
     }
 
+
     private static ArtistItem artist(String id) {
         ArtistItem artist = new ArtistItem();
         artist.setExternalUrls(urls("https://open.spotify.com/artist/" + id));
@@ -185,6 +246,7 @@ class TagBasedRecommendationServiceTest {
         artist.setUri("spotify:artist:" + id);
         return artist;
     }
+
 
     private static ExternalUrlsItem urls(String spotifyUrl) {
         ExternalUrlsItem externalUrls = new ExternalUrlsItem();
