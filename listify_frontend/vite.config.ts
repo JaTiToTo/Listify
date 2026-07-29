@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      host: env.DOMAIN,
+      host: env.VITE_DOMAIN,
       port: 5173,
     },
   };
