@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { apiGetJson } from "../lib/api";
 
-const sessionIdMock = (Math.random() * 0xFFFFFFFFFFFFF).toString(16).slice(0, 10);
+const sessionId = (Math.random() * 0xfffffffffffff).toString(16).slice(0, 10);
 
 type FilterKey =
   | "acousticness"
@@ -46,7 +46,8 @@ type FilterDefinition = {
   accentColor: string;
 };
 
-const sliderCardClassName = "rounded-3xl border border-[#e0e0e0] bg-lightgrey p-6 shadow-sm";
+const sliderCardClassName =
+  "rounded-3xl border border-[#e0e0e0] bg-lightgrey p-6 shadow-sm";
 
 const cassetteStripColors = ["#D94B3D", "#F0B429", "#24B81F", "#3387B9"];
 
@@ -115,7 +116,8 @@ const filterDefinitions: FilterDefinition[] = [
   {
     key: "loudness",
     title: "Loudness",
-    description: "Measured from quieter and more restrained to louder and more forceful.",
+    description:
+      "Measured from quieter and more restrained to louder and more forceful.",
     leftLabel: "Quiet",
     rightLabel: "Loud",
     min: -60,
@@ -198,7 +200,8 @@ const filterDefinitions: FilterDefinition[] = [
   {
     key: "valence",
     title: "Valence",
-    description: "Mood from darker and more restrained to brighter and happier.",
+    description:
+      "Mood from darker and more restrained to brighter and happier.",
     leftLabel: "Dark",
     rightLabel: "Bright",
     min: 0,
@@ -251,23 +254,29 @@ function SliderCard({
 
   return (
     <div className={sliderCardClassName}>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex justify-between items-start gap-4">
         <div className="space-y-1">
-          <h3 className="font-quub text-xl font-bold text-[#1e1e1e]">{title}</h3>
-          <p className="max-w-sm text-sm leading-6 text-gray-600">{description}</p>
+          <h3 className="font-quub font-bold text-[#1e1e1e] text-xl">
+            {title}
+          </h3>
+          <p className="max-w-sm text-gray-600 text-sm leading-6">
+            {description}
+          </p>
         </div>
         <div
           className={`flex items-center justify-center rounded-full border border-[#1e1e1e] bg-[#f7f9ef] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e] whitespace-nowrap ${valueBadgeWidthClassName}`}
-          style={{ boxShadow: `0 0 0 56px ${accentColor}33 inset, 0 0 18px ${accentColor}22` }}
+          style={{
+            boxShadow: `0 0 0 56px ${accentColor}33 inset, 0 0 18px ${accentColor}22`,
+          }}
         >
           {valueLabel(value)}
         </div>
       </div>
 
       <div className="mt-6">
-        <div className="relative h-4 rounded-full border border-[#1e1e1e] bg-[#ececec] shadow-[inset_0_2px_0_rgba(255,255,255,0.75),inset_0_-2px_0_rgba(0,0,0,0.08)]">
+        <div className="relative bg-[#ececec] shadow-[inset_0_2px_0_rgba(255,255,255,0.75),inset_0_-2px_0_rgba(0,0,0,0.08)] border border-[#1e1e1e] rounded-full h-4">
           <div
-            className="absolute left-1 top-1/2 h-2 -translate-y-1/2 rounded-full"
+            className="top-1/2 left-1 absolute rounded-full h-2 -translate-y-1/2"
             style={{
               width: `${progress}%`,
               backgroundImage: `linear-gradient(90deg, ${accentColor} 0%, ${accentColor}dd 100%)`,
@@ -275,7 +284,7 @@ function SliderCard({
             }}
           />
           <div
-            className="absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#1e1e1e]"
+            className="top-1/2 absolute border-[#1e1e1e] border-2 rounded-full w-6 h-6 -translate-x-1/2 -translate-y-1/2"
             style={{
               left: `${progress}%`,
               backgroundImage: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.96) 0 11%, ${accentColor} 19% 100%)`,
@@ -290,11 +299,11 @@ function SliderCard({
             step={step}
             value={value}
             onChange={(event) => onChange(Number(event.target.value))}
-            className="absolute inset-0 h-4 w-full cursor-pointer appearance-none bg-transparent opacity-0"
+            className="absolute inset-0 bg-transparent opacity-0 w-full h-4 appearance-none cursor-pointer"
           />
         </div>
 
-        <div className="mt-3 flex justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">
+        <div className="flex justify-between mt-3 font-semibold text-[11px] text-gray-500 uppercase tracking-[0.18em]">
           <span>{leftLabel}</span>
           <span>{rightLabel}</span>
         </div>
@@ -307,6 +316,9 @@ export function CreatePage() {
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
   const [requestError, setRequestError] = useState<string | null>(null);
+  const [playlistName, setPlaylistName] = useState("Listify Playlist");
+  const [isLoadingRecommendations, setIsLoadingRecommendations] =
+    useState(false);
   const navigate = useNavigate();
 
   const setFilterValue = (key: FilterKey) => (value: number) => {
@@ -332,11 +344,14 @@ export function CreatePage() {
       sessionStorage.removeItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY);
     } finally {
       setIsLoadingRecommendations(false);
+      navigate(
+        `/create/${sessionId}/draft?name=${encodeURIComponent(playlistName)}`,
+      );
     }
   };
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8 py-8 pb-32">
+    <div className="flex flex-col gap-8 mx-auto py-8 pb-32 max-w-6xl">
       <div className="flex flex-col gap-2">
         <h2 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Create your own playlist</h2>
         <p className="font-quub text-lg font-semibold text-gray-600">Set the sound profile for the draft</p>
@@ -347,10 +362,35 @@ export function CreatePage() {
               : requestError}
           </div>
         ) : null}
+        <h2 className="font-vampire font-bold text-[#1e1e1e] text-4xl tracking-tight">
+          Create your own playlist
+        </h2>
+        <p className="font-quub font-semibold text-gray-600 text-lg">
+          Set the sound profile for the draft
+        </p>
       </div>
 
-      <div className="rounded-[32px] border border-[#e0e0e0] bg-[#f7f9ef] p-4 shadow-soft sm:p-6">
-        <div className="grid gap-4">
+      <div className="bg-[#f7f9ef] shadow-soft p-4 sm:p-6 border border-[#e0e0e0] rounded-[32px]">
+        <div className="bg-lightgrey shadow-sm p-6 border border-[#e0e0e0] rounded-3xl">
+          <div className="space-y-1">
+            <h3 className="font-quub font-bold text-[#1e1e1e] text-xl">
+              Playlist title
+            </h3>
+            <p className="max-w-sm text-gray-600 text-sm leading-6">
+              Choose a name for your generated playlist.
+            </p>
+          </div>
+
+          <input
+            type="text"
+            value={playlistName}
+            onChange={(event) => setPlaylistName(event.target.value)}
+            placeholder="Listify Playlist"
+            className="bg-[#f7f9ef] mt-6 px-4 py-3 border border-[#1e1e1e] focus:border-[#3387B9] rounded-2xl outline-none focus:ring-[#3387B9]/20 focus:ring-2 w-full font-quub font-semibold text-[#1e1e1e] transition"
+          />
+        </div>
+
+        <div className="gap-4 grid">
           <SliderCard
             key={filterDefinitions[0].key}
             title={filterDefinitions[0].title}
@@ -362,12 +402,14 @@ export function CreatePage() {
             step={filterDefinitions[0].step}
             value={filters[filterDefinitions[0].key]}
             valueLabel={filterDefinitions[0].valueLabel}
-            valueBadgeWidthClassName={filterDefinitions[0].valueBadgeWidthClassName}
-              accentColor={filterDefinitions[0].accentColor}
+            valueBadgeWidthClassName={
+              filterDefinitions[0].valueBadgeWidthClassName
+            }
+            accentColor={filterDefinitions[0].accentColor}
             onChange={setFilterValue(filterDefinitions[0].key)}
           />
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="gap-4 grid md:grid-cols-2">
             <SliderCard
               key={filterDefinitions[1].key}
               title={filterDefinitions[1].title}
@@ -379,7 +421,9 @@ export function CreatePage() {
               step={filterDefinitions[1].step}
               value={filters[filterDefinitions[1].key]}
               valueLabel={filterDefinitions[1].valueLabel}
-              valueBadgeWidthClassName={filterDefinitions[1].valueBadgeWidthClassName}
+              valueBadgeWidthClassName={
+                filterDefinitions[1].valueBadgeWidthClassName
+              }
               accentColor={filterDefinitions[1].accentColor}
               onChange={setFilterValue(filterDefinitions[1].key)}
             />
@@ -394,13 +438,15 @@ export function CreatePage() {
               step={filterDefinitions[2].step}
               value={filters[filterDefinitions[2].key]}
               valueLabel={filterDefinitions[2].valueLabel}
-              valueBadgeWidthClassName={filterDefinitions[2].valueBadgeWidthClassName}
+              valueBadgeWidthClassName={
+                filterDefinitions[2].valueBadgeWidthClassName
+              }
               accentColor={filterDefinitions[2].accentColor}
               onChange={setFilterValue(filterDefinitions[2].key)}
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="gap-4 grid md:grid-cols-2">
             <SliderCard
               key={filterDefinitions[6].key}
               title={filterDefinitions[6].title}
@@ -412,7 +458,9 @@ export function CreatePage() {
               step={filterDefinitions[6].step}
               value={filters[filterDefinitions[6].key]}
               valueLabel={filterDefinitions[6].valueLabel}
-              valueBadgeWidthClassName={filterDefinitions[6].valueBadgeWidthClassName}
+              valueBadgeWidthClassName={
+                filterDefinitions[6].valueBadgeWidthClassName
+              }
               accentColor={filterDefinitions[6].accentColor}
               onChange={setFilterValue(filterDefinitions[6].key)}
             />
@@ -427,13 +475,15 @@ export function CreatePage() {
               step={filterDefinitions[7].step}
               value={filters[filterDefinitions[7].key]}
               valueLabel={filterDefinitions[7].valueLabel}
-              valueBadgeWidthClassName={filterDefinitions[7].valueBadgeWidthClassName}
+              valueBadgeWidthClassName={
+                filterDefinitions[7].valueBadgeWidthClassName
+              }
               accentColor={filterDefinitions[7].accentColor}
               onChange={setFilterValue(filterDefinitions[7].key)}
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="gap-4 grid md:grid-cols-3">
             {filterDefinitions.slice(3, 6).map((filterDefinition) => (
               <SliderCard
                 key={filterDefinition.key}
@@ -446,7 +496,9 @@ export function CreatePage() {
                 step={filterDefinition.step}
                 value={filters[filterDefinition.key]}
                 valueLabel={filterDefinition.valueLabel}
-                valueBadgeWidthClassName={filterDefinition.valueBadgeWidthClassName}
+                valueBadgeWidthClassName={
+                  filterDefinition.valueBadgeWidthClassName
+                }
                 accentColor={filterDefinition.accentColor}
                 onChange={setFilterValue(filterDefinition.key)}
               />
@@ -455,35 +507,44 @@ export function CreatePage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-[28px] border border-[#e0e0e0] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-4 bg-white shadow-sm p-5 sm:p-6 border border-[#e0e0e0] rounded-[28px]">
         <div className="space-y-2">
-          <p className="font-quub text-sm font-semibold uppercase tracking-[0.22em] text-gray-500">Current draft settings</p>
-          <p className="max-w-2xl text-sm leading-6 text-gray-600">
-            These values stay in the frontend state for now so they can be passed to the backend recommendations endpoint later.
+          <p className="font-quub font-semibold text-gray-500 text-sm uppercase tracking-[0.22em]">
+            Current draft settings
+          </p>
+          <p className="max-w-2xl text-gray-600 text-sm leading-6">
+            These values stay in the frontend state for now so they can be
+            passed to the backend recommendations endpoint later.
           </p>
         </div>
-        <div className="rounded-2xl bg-[#f7f9ef] px-4 py-3 text-sm font-semibold text-[#1e1e1e]">
+        <div className="bg-[#f7f9ef] px-4 py-3 rounded-2xl font-semibold text-[#1e1e1e] text-sm">
           {filters.limit} tracks, {filters.tempo} BPM, {filters.loudness} dB
         </div>
       </div>
 
       <div className="flex justify-center">
         <button
-          className="group relative overflow-hidden rounded-[30px] border-[3px] border-[#1e1e1e] bg-[#efe8cf] px-14 py-6 font-quub text-xl font-bold text-[#1e1e1e] shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] transition-transform duration-200 hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+          className="group relative bg-[#efe8cf] disabled:opacity-70 shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] px-14 py-6 border-[#1e1e1e] border-[3px] rounded-[30px] overflow-hidden font-quub font-bold text-[#1e1e1e] text-xl transition-transform hover:-translate-y-1 disabled:hover:translate-y-0 duration-200 disabled:cursor-not-allowed"
           onClick={handleCreateDraftPlaylist}
           disabled={isLoadingRecommendations}
         >
-          <span className="absolute inset-x-0 top-0 flex h-3 overflow-hidden">
+          <span className="top-0 absolute inset-x-0 flex h-3 overflow-hidden">
             {cassetteStripColors.map((color) => (
-              <span key={color} className="h-full flex-1" style={{ backgroundColor: color }} />
+              <span
+                key={color}
+                className="flex-1 h-full"
+                style={{ backgroundColor: color }}
+              />
             ))}
           </span>
-          <span className="absolute left-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#1e1e1e] bg-white shadow-[0_3px_0_#1e1e1e]">
-            <span className="ml-0.5 border-y-4 border-y-transparent border-l-7 border-l-[#1e1e1e]" />
+          <span className="top-1/2 left-4 absolute flex justify-center items-center bg-white shadow-[0_3px_0_#1e1e1e] border-[#1e1e1e] border-2 rounded-full w-8 h-8 -translate-y-1/2">
+            <span className="ml-0.5 border-y-4 border-y-transparent border-l-[#1e1e1e] border-l-7" />
           </span>
-          <span className="absolute right-4 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full border-2 border-[#1e1e1e] bg-white shadow-[0_3px_0_#1e1e1e]" />
-          <span className="absolute inset-x-5 bottom-2 h-1 rounded-full bg-[#24B81F]/30" />
-          {isLoadingRecommendations ? "Preparing draft..." : "Create draft playlist"}
+          <span className="top-1/2 right-4 absolute bg-white shadow-[0_3px_0_#1e1e1e] border-[#1e1e1e] border-2 rounded-full w-8 h-8 -translate-y-1/2" />
+          <span className="bottom-2 absolute inset-x-5 bg-[#24B81F]/30 rounded-full h-1" />
+          {isLoadingRecommendations
+            ? "Preparing draft..."
+            : "Create draft playlist"}
         </button>
       </div>
     </div>
