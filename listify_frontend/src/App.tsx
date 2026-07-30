@@ -5,8 +5,8 @@ import { MainPage } from "./pages/MainPage";
 import { CreatePage } from "./pages/CreatePage";
 import DraftPage from "./pages/DraftPage";
 import ResultPage from "./pages/ResultPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsOfServicePage from "./pages/TermsOfServicePage";
+import { PrivacyPolicyPage }  from "./pages/PrivacyPolicyPage";
+import { TermsOfServicePage }  from "./pages/TermsOfServicePage";
 
 import { SpotifyCallbackPage } from "./pages/SpotifyCallbackPage";
 
