@@ -1,26 +1,17 @@
 import { useEffect, useState } from "react";
 
-import { apiGetJson, apiPostJson } from "../lib/api";
+import { apiPostJson } from "../lib/api";
 
 import { formatDuration, sumDuration } from "../components/StatMeter";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-type MockResult = {
-  tracks: {
-    items: TrackItem[];
-  };
-};
-
 type RecommendationDebugResponse = {
-  items?: Array<{
-    id?: string;
-    name?: string;
-    external_ids?: { isrc?: string };
-  }>;
+  items?: TrackItem[];
   selectedTags?: string[];
 };
 
 const RECOMMENDATIONS_DEBUG_STORAGE_KEY = "listify:last-recommendations-response";
+const SPOTIFY_TRACK_PREFIX = "spotify:track:";
 type CreatePlaylistRequest = {
   songIds: string[];
   playlistName: string;
@@ -105,6 +96,10 @@ function getMetricValue(track: TrackItem, key: MetricDefinition["key"]) {
   return getFallbackAudioProfile(track)[key];
 }
 
+function getTrackKey(track: TrackItem) {
+  return track.id ?? `${track.name}-${track.artists.map((artist) => artist.name).join(",")}`;
+}
+
 const toUnitPercent = (value?: number) => {
   if (typeof value !== "number") {
     return null;
@@ -129,6 +124,16 @@ const toLoudnessPercent = (value?: number) => {
 
   return clamp(Math.round(((value + 60) / 60) * 100), 0, 100);
 };
+
+function toSpotifyTrackUri(trackId?: string) {
+  if (!trackId) {
+    return null;
+  }
+
+  return trackId.startsWith(SPOTIFY_TRACK_PREFIX)
+    ? trackId
+    : `${SPOTIFY_TRACK_PREFIX}${trackId}`;
+}
 
 const metrics: MetricDefinition[] = [
   {
@@ -238,9 +243,11 @@ function MetricRail({
 function PlaylistTrackCard({
   track,
   index,
+  onDelete,
 }: {
   track: TrackItem;
   index: number;
+  onDelete: (track: TrackItem) => void;
 }) {
   const coverImage = track.album.images[0]?.url;
   const artistName = track.artists.map((artist) => artist.name).join(", ");
@@ -288,30 +295,6 @@ function PlaylistTrackCard({
               {formatDuration(track.duration_ms)}
             </div>
           </div>
-
-          <details className="group bg-[#f7f9ef] p-3 border border-[#e0e0e0] rounded-2xl">
-            <summary className="flex justify-between items-center gap-3 cursor-pointer list-none">
-              <span className="font-quub font-semibold text-gray-600 text-xs uppercase tracking-[0.18em]">
-                Show audio profile
-              </span>
-              <span className="bg-white px-2.5 py-1 border border-[#1e1e1e] rounded-full font-semibold text-[#1e1e1e] text-[10px] uppercase tracking-[0.16em] group-open:-rotate-180 transition">
-                v
-              </span>
-            </summary>
-
-            <div className="gap-2 grid sm:grid-cols-2 xl:grid-cols-3 mt-3">
-              {metrics.map((metric) => (
-                <MetricRail
-                  key={`${track.id ?? track.name}-${metric.key}`}
-                  label={metric.label}
-                  valueLabel={metric.valueLabel(track)}
-                  percent={metric.toPercent(track)}
-                  accentColor={metric.accentColor}
-                />
-              ))}
-            </div>
-          </details>
-
           <div className="sm:hidden flex justify-between items-center">
             <span className="bg-[#f7f9ef] px-3 py-1 border border-[#1e1e1e] rounded-full font-semibold text-[#1e1e1e] text-xs uppercase tracking-[0.16em]">
               {formatDuration(track.duration_ms)}
@@ -322,6 +305,7 @@ function PlaylistTrackCard({
         <button
           type="button"
           aria-label={`Remove ${track.name} from draft`}
+          onClick={() => onDelete(track)}
           className="flex justify-center items-center self-stretch bg-[#fff2f0] hover:bg-[#ffd9d4] border-[#e0e0e0] border-l w-11 text-[#d94b3d] transition-colors shrink-0"
         >
           <svg
@@ -344,40 +328,49 @@ function PlaylistTrackCard({
 const DraftPage = () => {
   const { id: sessionId } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<MockResult | null>(null);
-  const [recommendationDebug, setRecommendationDebug] = useState<RecommendationDebugResponse | null>(null);
+  const [recommendationResponse, setRecommendationResponse] = useState<RecommendationDebugResponse | null>(null);
+  const [tracks, setTracks] = useState<TrackItem[]>([]);
   const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const playlistName = params.get("name") ?? "Listify Playlist";
-  let playlistUrlId: string = "";
+
+  const handleDeleteTrack = (trackToDelete: TrackItem) => {
+    setTracks((currentTracks) =>
+      currentTracks.filter((track) => getTrackKey(track) !== getTrackKey(trackToDelete)),
+    );
+  };
 
   useEffect(() => {
     const storedResponse = sessionStorage.getItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY);
     if (storedResponse) {
       try {
-        setRecommendationDebug(JSON.parse(storedResponse) as RecommendationDebugResponse);
+        const parsedResponse = JSON.parse(storedResponse) as RecommendationDebugResponse;
+        setRecommendationResponse(parsedResponse);
+        setTracks(parsedResponse.items ?? []);
       } catch (error) {
         console.error("Failed to parse stored recommendations response:", error);
       }
     }
-
-    apiGetJson<MockResult>("/mock-result")
-      .then(setData)
-      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
+  const totalDuration = sumDuration({
+    tracks: {
+      items: tracks,
+    },
+  });
+
   function generatePlaylistRequestPayload(): CreatePlaylistRequest {
+    const songIds = tracks
+      .map((track) => toSpotifyTrackUri(track.id))
+      .filter((id): id is string => Boolean(id));
+
     const playlistRequestPayload: CreatePlaylistRequest = {
-      songIds: [
-        "spotify:track:2saoOMgzvDizi7CE8qxvyB",
-        "spotify:track:4yH9v7cWu7QXJffkusO5bW",
-        "spotify:track:0G21yYKMZoHa30cYVi1iA8",
-        "spotify:track:0ofHAoxe9vBkTCp2UQIavz",
-      ],
+      songIds,
       playlistName: playlistName,
     };
+
     return playlistRequestPayload;
   }
 
@@ -391,50 +384,32 @@ const DraftPage = () => {
       >("/playlists", generatePlaylistRequestPayload());
       console.log("Playlist created with id:", response.playlistId);
 
-      playlistUrlId = response.playlistId ? response.playlistId : "";
-      console.log("Playlist URL ID:", playlistUrlId);
+      const playlistId = response.playlistId ? response.playlistId : "";
+      console.log("Playlist URL ID:", playlistId);
       console.log("response is", response);
+
+      return playlistId;
     } catch (error) {
       console.error("Failed to create playlist:", error);
+      return "";
     } finally {
       setIsCreatingPlaylist(false);
     }
   };
 
-  if (!data) {
-    {
-      /* TODO: Implement loading state */
-    }
-    return <div>Loading...</div>;
-  }
-  const totalDuration = sumDuration(data);
-
   return (
     <div className="flex flex-col gap-8 mx-auto py-8 pb-32 max-w-6xl">
       <div className="flex flex-col gap-2">
         <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
-        <p className="font-quub text-lg font-semibold text-gray-600">{data.tracks.items.length} tracks selected</p>
-        <details className="group w-fit rounded-2xl border border-[#1e1e1e] bg-[#f7f9ef] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#1e1e1e]">
-          <summary className="flex cursor-pointer list-none items-center gap-2">
-            <span>Debug response: {recommendationDebug?.items?.length ?? 0} items from /songs/recommendations</span>
-            <span className="rounded-full border border-[#1e1e1e] bg-white px-2 py-0.5 text-[10px] transition group-open:-rotate-180">v</span>
-          </summary>
-          {recommendationDebug?.selectedTags?.length ? (
-            <p className="mt-2 normal-case tracking-normal text-gray-600">
-              Tags: {recommendationDebug.selectedTags.join(", ")}
-            </p>
-          ) : null}
-        </details>
-        <p className="max-w-4xl text-sm leading-6 text-gray-600">
-          {recommendationDebug?.items?.length
-            ? `First results: ${recommendationDebug.items.slice(0, 3).map((item) => `${item.name ?? item.id ?? "unnamed"}${item.external_ids?.isrc ? ` (${item.external_ids.isrc})` : ""}`).join(" · ")}`
-            : "No recommendation response stored yet. Open the Network tab, trigger Create draft playlist, and inspect the /songs/recommendations response."}
-        </p>
+        <p className="font-quub text-lg font-semibold text-gray-600">{tracks.length} tracks selected</p>
+          <p className="mt-2 normal-case tracking-normal text-gray-600">
+            Tags: {recommendationResponse?.selectedTags?.join(", ")}
+          </p>
       </div>
 
       <div className="bg-[#f7f9ef] shadow-soft p-4 sm:p-6 border border-[#e0e0e0] rounded-[32px]">
         <div className="flex flex-col gap-4">
-          {data.tracks.items.map((track, index) => (
+          {tracks.map((track, index) => (
             <PlaylistTrackCard
               key={
                 track.id ??
@@ -442,6 +417,7 @@ const DraftPage = () => {
               }
               track={track}
               index={index}
+              onDelete={handleDeleteTrack}
             />
           ))}
         </div>
@@ -452,25 +428,24 @@ const DraftPage = () => {
           <p className="font-quub font-semibold text-gray-500 text-sm uppercase tracking-[0.22em]">
             Current draft
           </p>
-          <p className="max-w-2xl text-gray-600 text-sm leading-6">
-            Open each card to inspect tempo, loudness and vibe values before
-            saving the playlist.
-          </p>
         </div>
         <div className="bg-[#f7f9ef] px-4 py-3 rounded-2xl font-semibold text-[#1e1e1e] text-sm">
-          {data.tracks.items.length} tracks, {totalDuration} total
+          {tracks.length} tracks, {totalDuration} total
         </div>
       </div>
 
       <div className="flex justify-center">
         <button
-          onClick={() =>
-            handleSavePlaylist().then(() =>
-              navigate(
-                `/create/${sessionId}/result?playlistId=${playlistUrlId}&duration=${encodeURIComponent(totalDuration)}&name=${encodeURIComponent(playlistName)}`,
-              ),
-            )
-          }
+          onClick={async () => {
+            const playlistUrlId = await handleSavePlaylist();
+            if (!playlistUrlId) {
+              return;
+            }
+
+            navigate(
+              `/create/${sessionId}/result?playlistId=${playlistUrlId}&duration=${encodeURIComponent(totalDuration)}&name=${encodeURIComponent(playlistName)}`,
+            );
+          }}
           className="group relative bg-[#efe8cf] shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] px-12 py-5 border-[#1e1e1e] border-[3px] rounded-[30px] overflow-hidden font-quub font-bold text-[#1e1e1e] text-lg transition-transform hover:-translate-y-1 duration-200"
         >
           <span className="top-0 absolute inset-x-0 flex h-3 overflow-hidden">

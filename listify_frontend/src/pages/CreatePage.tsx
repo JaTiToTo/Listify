@@ -94,7 +94,7 @@ const filterDefinitions: FilterDefinition[] = [
     leftLabel: "Fewer tracks",
     rightLabel: "More tracks",
     min: 1,
-    max: 100,
+    max: 50,
     step: 1,
     valueLabel: (value) => `${value} tracks`,
     valueBadgeWidthClassName: "min-w-[11ch]",

@@ -23,6 +23,9 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export function RootLayout() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const navigate = useNavigate();
+  const backgroundGrid = import.meta.env.DEV
+    ? { cols: 64, rows: 48 }
+    : { cols: 150, rows: 120 };
 
   async function handleLogout() {
     await callApi("/auth/logout", "POST");
@@ -180,8 +183,8 @@ export function RootLayout() {
         <div className="relative min-h-full">
           <BackgroundPixelWash
             className="absolute inset-0 w-full h-full pointer-events-none"
-            cols={150}
-            rows={120}
+            cols={backgroundGrid.cols}
+            rows={backgroundGrid.rows}
             opacity={0.35}
           />
 
