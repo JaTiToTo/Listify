@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import PixelGrid from "../..//lib/pixelGradient/PixelGrid";
 import { createPixelGrid } from "../..//lib/pixelGradient/grid";
-import { cornerMask, Corner } from "../../lib/pixelGradient/cornerMask";
+import { Corner } from "../../lib/pixelGradient/cornerMask";
 
 const BACKGROUND_STOPS = [
   [247, 249, 239],
