@@ -7,11 +7,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 public class UtilService {
-    static HttpSession getCurrentSession() {
+    public static HttpSession getCurrentSession() {
         return getCurrentSession(true);
     }
 
-    static HttpSession getCurrentSession(boolean createIfMissing) {
+    public static HttpSession getCurrentSession(boolean createIfMissing) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             throw new IllegalStateException("No request context available");
