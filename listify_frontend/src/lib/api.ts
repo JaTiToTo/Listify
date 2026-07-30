@@ -18,6 +18,15 @@ export async function apiGetText(path: string): Promise<string> {
   return response.text() as Promise<string>;
 }
 
+export async function hasActiveSession(): Promise<boolean> {
+  try {
+    const response = await callApi("/auth/session", "GET");
+    return response.status === 204;
+  } catch {
+    return false;
+  }
+}
+
 export async function callApi(path: string, method: string, body?: unknown) {
   const response = await fetch(`${apiBaseUrl}${path}`, {
     method: method,

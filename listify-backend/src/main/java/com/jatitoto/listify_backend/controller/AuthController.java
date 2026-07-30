@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jatitoto.listify.api.AuthApi;
 import com.jatitoto.listify_backend.service.SpotifyAuthService;
+import com.jatitoto.listify_backend.service.UtilService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +13,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController implements AuthApi {
     private final SpotifyAuthService spotifyAuthService;
+
+    @Override
+    public ResponseEntity<Void> hasActiveSession() {
+        return UtilService.getCurrentSession(false) != null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.status(401).build();
+    }
 
     @Override
     public ResponseEntity<String> initiateSpotifyLogin() {
