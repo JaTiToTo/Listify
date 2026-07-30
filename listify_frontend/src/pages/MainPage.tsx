@@ -15,6 +15,7 @@ const presetCards = [
     image: playlistCoverImageOne,
     overlay: "bg-[#24B81F]/40",
     label: "Daily Drive",
+    spotifyUrl: "https://open.spotify.com/playlist/068JXgL6sUu91MbMB9yNmt",
   },
   {
     title: "Sad vibes",
@@ -22,6 +23,7 @@ const presetCards = [
     image: playlistCoverImageThree,
     overlay: "bg-[#3387B9]/50",
     label: "Sad vibes",
+    spotifyUrl: "https://open.spotify.com/playlist/64cCDnNK3NgAzcyw368O8T",
   },
   {
     title: "Night Drive",
@@ -29,6 +31,7 @@ const presetCards = [
     image: playlistCoverImageFour,
     overlay: "bg-[#D94B3D]/40",
     label: "Night drive",
+    spotifyUrl: "https://open.spotify.com/playlist/425DKknrkKuggmrmP0ZjiS",
   },
   {
     title: "Uptown Funk",
@@ -36,6 +39,7 @@ const presetCards = [
     image: playlistCoverImageTwo,
     overlay: "bg-[#F0B429]/50",
     label: "Uptown Funk",
+    spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1E8FI3X1r3eFo4",
   },
 ];
 
@@ -53,11 +57,15 @@ export function MainPage() {
         </div>
         <div className="gap-5 sm:gap-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 font-sans">
           {presetCards.map((card) => (
-            <article
+            <a
               key={card.title}
-              className="flex flex-col gap-2 mx-auto w-full max-w-[240px] sm:max-w-none"
+              href={card.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open "${card.title}" playlist on Spotify`}
+              className="group flex flex-col gap-2 mx-auto w-full max-w-[240px] sm:max-w-none"
             >
-              <div className="relative shadow-soft rounded-[24px] sm:rounded-[28px] aspect-[5/4] sm:aspect-[4/5] overflow-hidden">
+              <article className="relative shadow-soft rounded-[24px] sm:rounded-[28px] aspect-[5/4] sm:aspect-[4/5] overflow-hidden transition-transform group-hover:-translate-y-1 duration-200">
                 <div className="z-10 relative object-cover">
                   <img
                     src={card.image}
@@ -77,8 +85,8 @@ export function MainPage() {
                     {card.description}
                   </p>
                 </div>
-              </div>
-            </article>
+              </article>
+            </a>
           ))}
         </div>
       </section>
