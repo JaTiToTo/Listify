@@ -95,6 +95,10 @@ function getMetricValue(track: TrackItem, key: MetricDefinition["key"]) {
   return getFallbackAudioProfile(track)[key];
 }
 
+function getTrackKey(track: TrackItem) {
+  return track.id ?? `${track.name}-${track.artists.map((artist) => artist.name).join(",")}`;
+}
+
 const toUnitPercent = (value?: number) => {
   if (typeof value !== "number") {
     return null;
@@ -228,9 +232,11 @@ function MetricRail({
 function PlaylistTrackCard({
   track,
   index,
+  onDelete,
 }: {
   track: TrackItem;
   index: number;
+  onDelete: (track: TrackItem) => void;
 }) {
   const coverImage = track.album.images[0]?.url;
   const artistName = track.artists.map((artist) => artist.name).join(", ");
@@ -288,6 +294,7 @@ function PlaylistTrackCard({
         <button
           type="button"
           aria-label={`Remove ${track.name} from draft`}
+          onClick={() => onDelete(track)}
           className="flex justify-center items-center self-stretch bg-[#fff2f0] hover:bg-[#ffd9d4] border-[#e0e0e0] border-l w-11 text-[#d94b3d] transition-colors shrink-0"
         >
           <svg
@@ -310,7 +317,8 @@ function PlaylistTrackCard({
 const DraftPage = () => {
   const { id: sessionId } = useParams();
   const navigate = useNavigate();
-  const [recommendationDebug, setRecommendationDebug] = useState<RecommendationDebugResponse | null>(null);
+  const [recommendationResponse, setRecommendationResponse] = useState<RecommendationDebugResponse | null>(null);
+  const [tracks, setTracks] = useState<TrackItem[]>([]);
   const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
   const location = useLocation();
@@ -318,18 +326,25 @@ const DraftPage = () => {
   const playlistName = params.get("name") ?? "Listify Playlist";
   let playlistUrlId: string = "";
 
+  const handleDeleteTrack = (trackToDelete: TrackItem) => {
+    setTracks((currentTracks) =>
+      currentTracks.filter((track) => getTrackKey(track) !== getTrackKey(trackToDelete)),
+    );
+  };
+
   useEffect(() => {
     const storedResponse = sessionStorage.getItem(RECOMMENDATIONS_DEBUG_STORAGE_KEY);
     if (storedResponse) {
       try {
-        setRecommendationDebug(JSON.parse(storedResponse) as RecommendationDebugResponse);
+        const parsedResponse = JSON.parse(storedResponse) as RecommendationDebugResponse;
+        setRecommendationResponse(parsedResponse);
+        setTracks(parsedResponse.items ?? []);
       } catch (error) {
         console.error("Failed to parse stored recommendations response:", error);
       }
     }
   }, []);
 
-  const tracks = recommendationDebug?.items ?? [];
   const totalDuration = sumDuration({
     tracks: {
       items: tracks,
@@ -375,7 +390,7 @@ const DraftPage = () => {
         <h1 className="font-vampire text-4xl font-bold tracking-tight text-[#1e1e1e]">Draft playlist</h1>
         <p className="font-quub text-lg font-semibold text-gray-600">{tracks.length} tracks selected</p>
           <p className="mt-2 normal-case tracking-normal text-gray-600">
-            Tags: {recommendationDebug?.selectedTags?.join(", ")}
+            Tags: {recommendationResponse?.selectedTags?.join(", ")}
           </p>
       </div>
 
@@ -389,6 +404,7 @@ const DraftPage = () => {
               }
               track={track}
               index={index}
+              onDelete={handleDeleteTrack}
             />
           ))}
         </div>

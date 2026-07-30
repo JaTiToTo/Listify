@@ -218,3 +218,4 @@ listify-backend/build/
 
 ### VS Code ###
 listify-backend/.vscode/
+listify_frontend/tsconfig.app.tsbuildinfo

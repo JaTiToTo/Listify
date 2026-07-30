@@ -33,7 +33,7 @@ const ResultPage = () => {
           width={380}
           title={playlistName}
           titleFontSize={titleFontSize}
-          label="Listfy"
+          label="Listify"
           duration={totalDuration}
           footerRight="GENERATED FOR SPOTIFY"
         />
@@ -52,7 +52,7 @@ const ResultPage = () => {
                 />
               ))}
             </span>
-            Save playlist to library
+            View playlist in Spotify
             <br />
             <a href={playlistUrl} target="_blank" rel="noopener noreferrer"></a>
           </button>
