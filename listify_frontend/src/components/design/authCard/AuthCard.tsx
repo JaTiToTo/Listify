@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import spotifyIcon from "../../../assets/svgs/spotifyLogo.svg";
 import "./AuthCard.css";
 import { apiGetText } from "../../../lib/api";
@@ -47,13 +47,19 @@ export default function AuthCard() {
 
       <p className="auth-card__footer">
         <span className="muted">{`By clicking continue, you agree to our `}</span>
-        <span className="font-quub font-medium text-black italic leading-[1.5]">
+        <Link
+          to="/terms"
+          className="font-quub font-medium text-black italic leading-[1.5] underline"
+        >
           Terms of Service
-        </span>
+        </Link>
         <span className="muted">{` and `}</span>
-        <span className="font-quub font-medium text-black italic leading-[1.5]">
+        <Link
+          to="/privacy"
+          className="font-quub font-medium text-black italic leading-[1.5] underline"
+        >
           Privacy Policy
-        </span>
+        </Link>
       </p>
     </div>
   );
