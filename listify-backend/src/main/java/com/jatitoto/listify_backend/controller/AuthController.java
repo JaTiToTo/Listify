@@ -1,7 +1,6 @@
 package com.jatitoto.listify_backend.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jatitoto.listify.api.AuthApi;
@@ -15,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController implements AuthApi {
     private final SpotifyAuthService spotifyAuthService;
 
-    @GetMapping("/api/auth/session")
+    @Override
     public ResponseEntity<Void> hasActiveSession() {
         return UtilService.getCurrentSession(false) != null
                 ? ResponseEntity.noContent().build()
