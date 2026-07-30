@@ -11,6 +11,7 @@ type RecommendationDebugResponse = {
 };
 
 const RECOMMENDATIONS_DEBUG_STORAGE_KEY = "listify:last-recommendations-response";
+const SPOTIFY_TRACK_PREFIX = "spotify:track:";
 type CreatePlaylistRequest = {
   songIds: string[];
   playlistName: string;
@@ -123,6 +124,16 @@ const toLoudnessPercent = (value?: number) => {
 
   return clamp(Math.round(((value + 60) / 60) * 100), 0, 100);
 };
+
+function toSpotifyTrackUri(trackId?: string) {
+  if (!trackId) {
+    return null;
+  }
+
+  return trackId.startsWith(SPOTIFY_TRACK_PREFIX)
+    ? trackId
+    : `${SPOTIFY_TRACK_PREFIX}${trackId}`;
+}
 
 const metrics: MetricDefinition[] = [
   {
@@ -324,7 +335,6 @@ const DraftPage = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const playlistName = params.get("name") ?? "Listify Playlist";
-  let playlistUrlId: string = "";
 
   const handleDeleteTrack = (trackToDelete: TrackItem) => {
     setTracks((currentTracks) =>
@@ -352,15 +362,15 @@ const DraftPage = () => {
   });
 
   function generatePlaylistRequestPayload(): CreatePlaylistRequest {
+    const songIds = tracks
+      .map((track) => toSpotifyTrackUri(track.id))
+      .filter((id): id is string => Boolean(id));
+
     const playlistRequestPayload: CreatePlaylistRequest = {
-      songIds: [
-        "spotify:track:2saoOMgzvDizi7CE8qxvyB",
-        "spotify:track:4yH9v7cWu7QXJffkusO5bW",
-        "spotify:track:0G21yYKMZoHa30cYVi1iA8",
-        "spotify:track:0ofHAoxe9vBkTCp2UQIavz",
-      ],
+      songIds,
       playlistName: playlistName,
     };
+
     return playlistRequestPayload;
   }
 
@@ -374,11 +384,14 @@ const DraftPage = () => {
       >("/playlists", generatePlaylistRequestPayload());
       console.log("Playlist created with id:", response.playlistId);
 
-      playlistUrlId = response.playlistId ? response.playlistId : "";
-      console.log("Playlist URL ID:", playlistUrlId);
+      const playlistId = response.playlistId ? response.playlistId : "";
+      console.log("Playlist URL ID:", playlistId);
       console.log("response is", response);
+
+      return playlistId;
     } catch (error) {
       console.error("Failed to create playlist:", error);
+      return "";
     } finally {
       setIsCreatingPlaylist(false);
     }
@@ -423,13 +436,16 @@ const DraftPage = () => {
 
       <div className="flex justify-center">
         <button
-          onClick={() =>
-            handleSavePlaylist().then(() =>
-              navigate(
-                `/create/${sessionId}/result?playlistId=${playlistUrlId}&duration=${encodeURIComponent(totalDuration)}&name=${encodeURIComponent(playlistName)}`,
-              ),
-            )
-          }
+          onClick={async () => {
+            const playlistUrlId = await handleSavePlaylist();
+            if (!playlistUrlId) {
+              return;
+            }
+
+            navigate(
+              `/create/${sessionId}/result?playlistId=${playlistUrlId}&duration=${encodeURIComponent(totalDuration)}&name=${encodeURIComponent(playlistName)}`,
+            );
+          }}
           className="group relative bg-[#efe8cf] shadow-[0_10px_0_#1e1e1e,0_20px_30px_rgba(0,0,0,0.22)] px-12 py-5 border-[#1e1e1e] border-[3px] rounded-[30px] overflow-hidden font-quub font-bold text-[#1e1e1e] text-lg transition-transform hover:-translate-y-1 duration-200"
         >
           <span className="top-0 absolute inset-x-0 flex h-3 overflow-hidden">
